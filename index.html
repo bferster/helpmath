@@ -10,11 +10,13 @@
 	</head>
 	<style>
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
-							padding:0; margin:0; position:fixed; width:100%; 
+							padding:0; margin:0; width:100%; 
 							}
 		.hm-main { 			width:100%; height:var(--maxvh);  user-select: none; display:none;
 							}
-		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:10% 25%;
+		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%;
+							}
+		.hm-module {		text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%;
 							}
 		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select: none;	
 							border-radius: 8px; background-color: #fff; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
@@ -29,6 +31,9 @@
 		.hm-bs {			cursor: pointer; color:#fff; text-align: center; border-radius: 16px; display: inline-block;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px;user-select: none;
 							} 
+		.hm-modbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
+							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select: none;
+							} 
 
 		:root  {			--maxvh: 100vh  }
 		table  {			border-spacing: 0px;  }
@@ -42,15 +47,24 @@
 
 	<body>
 		<div class="hm-login" id="hm-login">
-			<span style="font-size:3vw;font-weight:900">Welcome to HELP MATH!</span><br><br>
-			<img src="img/logo.png" style="width:50%"><br><br><b>Login ID &nbsp; &nbsp; &nbsp;</b> 
+			<span style="font-size:3vw;font-weight:900">Welcome to HELP MATH!</span><br>
+			<img src="img/logo.png" style="margin:3vw 0;width:33%"><br><b>Login ID &nbsp; &nbsp; </b> 
 			<input class='hm-is' style="width:120px" type='text' id='hm-loginUser'><br>
-			<b>Password &nbsp; &nbsp; </b>  <input class='hm-is' style="width:120px;margin-top:8px" type='text' id='hm-loginPassword'><br><br>
+			<b>Password &nbsp; </b>  <input class='hm-is' style="width:120px;margin-top:8px" type='text' id='hm-loginPassword'><br><br>
 			<div class="hm-bs" id="hm-login">GO</div>
 		</div>
-		<div class="hm-main" id="hm-main"">
-			Hello
+		<div class="hm-module" id="hm-module"">
+			<img src="img/logo.png" style="width:20%"><br>
+			<span style="font-size:2vw;font-weight:500">Choose your course:</span><br><br><br>
+			<div class="hm-modbut" id="hm-module-0">Math Foundations 1</div>
+			<div class="hm-modbut" id="hm-module-1">Math Foundations 2</div>
+			<div class="hm-modbut" id="hm-module-2">Math Foundations 3</div>
+			<div class="hm-modbut" id="hm-module-3">Numbers make sense</div>
+			<div class="hm-modbut" id="hm-module-4">Algebra - From ABC to XYZ</div>
+			<div class="hm-modbut" id="hm-module-5">Geometry - Go figure</div>
+			<div class="hm-modbut" id="hm-module-6">Data Analysis - How likely!</div>
 		</div>
+		<div class="hm-main" id="hm-main"></div>
 	
 <script>
 
@@ -65,21 +79,28 @@
 		$("#hm-login").fadeIn(2500);																// Fade in splash page
 	
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
+			Sound("click");																			// Click sound
 			// LOG INTO DB
 			app.userId=$("#hm-loginPassword").val().trim().toLowerCase();							// Set password
-			$("#hm-login").fadeOut(()=>{ app.Draw() })												// Fade out login
-			$("#hm-main").fadeIn();																	// Fade in main
+			$("#hm-login").fadeOut(()=>{ $("#hm-module").fadeIn(); })								// Fade out login / fade in modules
 			})
+
+		$("[id^=hm-module-]").on("click", function(e) {												// ON MODULE SELECT
+			Sound("click");																			// Click sound
+			app.module=e.target.id.substring(10);													// Get module id
+			app.Draw();																				// Draw it
+			$("#hm-module").fadeOut(()=>{ $("#hm-main").fadeIn(); })								// Fade out module / fade in main
+			});
 
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
 			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
-					}
+				}
 			});
 		});
 
 	$(window).on("resize orientationchange", ()=>{                                       			// ON WINDOW RESIZE
 		document.documentElement.style.setProperty("--maxvh", window.innerHeight+"px");				// Set CSS var for IOS 100vh isssue
-		app.Draw(true);																				// Redraw to fit screen
+		app.Draw();																				// Redraw to fit screen
 		});
 
 
@@ -103,6 +124,7 @@
 
 	function Sound(sound, mute)																		// PLAY SOUND
 	{
+		
 		var snd=new Audio();																			// Init audio object
 		if (sound.match(/\.mp3/i))		snd=new Audio(sound)											// If an MP3 file
 		else							snd=new Audio("img/"+sound+".mp3");								// Use built in mp3
