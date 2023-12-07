@@ -1,0 +1,20 @@
+
+{
+		data: {},
+		modules:[ 
+			{ name: "Math Foundations 1", id: 1000000, lessons: [ 
+				{ name:"A", id:1001000,	topics:[
+					{ name: "Our world", id:10010100, pages: [
+						{name:"Page name",  id:10010101
+						]};
+						
+					]};
+				]},
+			{ name: "Math Foundations 2", id: id:2000000 } ,
+			{ name: "Math Foundations 3", id: 3000000 },
+			{ name: "Numbers make sense", id: 4000000 },
+			{ name: "Algebra - From ABC to XYZ", id: 5000000 },
+			{ name: "Geometry - Go figure", id: 6000000 }, 
+			{ name: "Data Analysis - How likely!", id: 7000000 }
+		]
+}

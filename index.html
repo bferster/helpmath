@@ -6,19 +6,35 @@
 		<title>Help Math</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	
 		<script src="app.js"></script>
 	</head>
 	<style>
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
 							padding:0; margin:0; width:100%; 
 							}
-		.hm-main { 			width:100%; height:var(--maxvh);  user-select: none; display:none;
+		.hm-main { 			width:100%; user-select: none; display:none;
 							}
 		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%;
 							}
-		.hm-module {		text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%;
+		.hm-screen { 		width:calc(100vw - 48px); height:calc(100vh - 48px); user-select:none; background-color:#ddd; border-radius:16px; margin:24px 0 0 24px;
 							}
-		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select: none;	
+		.hm-video { 		width:75vw; height:calc(75vw * .5625); user-select:none; background-color:#ddd; border-radius:12px; margin:16px 0 0 calc(25vw - 64px);
+							}
+		.hm-timeSlider { 	width:calc(75vw - 44px); margin:12px 8px 0 calc(25vw - 56px); background-color:#185b9d; height:4px; border-radius:12px;display: inline-block;
+							}
+		.hm-timeSlider.ui-slider .ui-slider-handle { height:12px; width:12px; cursor:pointer; background:#185b9d; border-radius:12px; 
+							}
+		.hm-audioSlider { 	position:absolute; width:100px; left: calc(100% - 150px); top:calc(100vh - 50px);
+							background-color:#999; height:4px; border-radius:12px;
+							}
+		.hm-audioSlider.ui-slider .ui-slider-handle { height:12px; width:12px; cursor:pointer; background:#999; border-radius:12px;
+							}					
+		.hm-module {		text-align:center; color:#185b9d; width:50%; margin-left:25%;
+							}
+		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select:none;	
 							border-radius: 8px; background-color: #fff; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							}
 		.hm-popup {			position:absolute;  width: auto; max-width:200px; padding: 12px; left: calc(50% - 100px); top: calc(66% - 50px);
@@ -29,11 +45,20 @@
 							border:1px solid #999; font-size: 13px;
 							}
 		.hm-bs {			cursor: pointer; color:#fff; text-align: center; border-radius: 16px; display: inline-block;
-							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px;user-select: none;
+							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
 		.hm-modbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
-							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select: none;
+							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
+		.hm-topicbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; margin:8px;
+							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
+							} 
+
+
+		.hm-lessonbut {		cursor: pointer; color:#185b9d; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
+							font-size: 14px; background-color: #dddd; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
+							} 
+
 
 		:root  {			--maxvh: 100vh  }
 		table  {			border-spacing: 0px;  }
@@ -53,18 +78,9 @@
 			<b>Password &nbsp; </b>  <input class='hm-is' style="width:120px;margin-top:8px" type='text' id='hm-loginPassword'><br><br>
 			<div class="hm-bs" id="hm-login">GO</div>
 		</div>
-		<div class="hm-module" id="hm-module"">
-			<img src="img/logo.png" style="width:20%"><br>
-			<span style="font-size:2vw;font-weight:500">Choose your course:</span><br><br><br>
-			<div class="hm-modbut" id="hm-module-0">Math Foundations 1</div>
-			<div class="hm-modbut" id="hm-module-1">Math Foundations 2</div>
-			<div class="hm-modbut" id="hm-module-2">Math Foundations 3</div>
-			<div class="hm-modbut" id="hm-module-3">Numbers make sense</div>
-			<div class="hm-modbut" id="hm-module-4">Algebra - From ABC to XYZ</div>
-			<div class="hm-modbut" id="hm-module-5">Geometry - Go figure</div>
-			<div class="hm-modbut" id="hm-module-6">Data Analysis - How likely!</div>
+		<div class="hm-main" id="hm-main">
+			<div class="hm-screen" id="hm-screen"></div>
 		</div>
-		<div class="hm-main" id="hm-main"></div>
 	
 <script>
 
@@ -76,21 +92,13 @@
 		app=new App();																				// Load app
 		let url=window.location.search.substring(1);												// Get query line
 		let v=url.split("&");																		// Get options
+//		$("#hm-main").fadeIn();app.ShowLesson(); return
 		$("#hm-login").fadeIn(2500);																// Fade in splash page
-	
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
 			Sound("click");																			// Click sound
-			// LOG INTO DB
 			app.userId=$("#hm-loginPassword").val().trim().toLowerCase();							// Set password
-			$("#hm-login").fadeOut(()=>{ $("#hm-module").fadeIn(); })								// Fade out login / fade in modules
+			$("#hm-login").fadeOut(()=>{ $("#hm-main").fadeIn(); app.LogIn();  })					// Fade out login / fade in main
 			})
-
-		$("[id^=hm-module-]").on("click", function(e) {												// ON MODULE SELECT
-			Sound("click");																			// Click sound
-			app.module=e.target.id.substring(10);													// Get module id
-			app.Draw();																				// Draw it
-			$("#hm-module").fadeOut(()=>{ $("#hm-main").fadeIn(); })								// Fade out module / fade in main
-			});
 
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
 			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
@@ -100,7 +108,7 @@
 
 	$(window).on("resize orientationchange", ()=>{                                       			// ON WINDOW RESIZE
 		document.documentElement.style.setProperty("--maxvh", window.innerHeight+"px");				// Set CSS var for IOS 100vh isssue
-		app.Draw();																				// Redraw to fit screen
+	//	app.Draw();																				// Redraw to fit screen
 		});
 
 
@@ -124,7 +132,6 @@
 
 	function Sound(sound, mute)																		// PLAY SOUND
 	{
-		
 		var snd=new Audio();																			// Init audio object
 		if (sound.match(/\.mp3/i))		snd=new Audio(sound)											// If an MP3 file
 		else							snd=new Audio("img/"+sound+".mp3");								// Use built in mp3
