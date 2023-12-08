@@ -54,11 +54,14 @@
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
 
-
 		.hm-lessonbut {		cursor: pointer; color:#185b9d; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
 							font-size: 14px; background-color: #dddd; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
 							} 
+		.hm-lessonTitle {	color:#185b9d; font-size: 18px; font-weight: bold; position:absolute; left:calc(25% - 24px); top:48px; text-shadow: 0px 1px #fff;
+							} 
 
+		.hm-page {			font-size:10px; background-color:#999; color:#fff; border:1px solid #185b9d; display:inline-block; text-align:center;
+							}
 
 		:root  {			--maxvh: 100vh  }
 		table  {			border-spacing: 0px;  }
@@ -92,8 +95,8 @@
 		app=new App();																				// Load app
 		let url=window.location.search.substring(1);												// Get query line
 		let v=url.split("&");																		// Get options
-//		$("#hm-main").fadeIn();app.ShowLesson(); return
-		$("#hm-login").fadeIn(2500);																// Fade in splash page
+	//	$("#hm-main").fadeIn();app.ShowLesson(); return
+		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
 			Sound("click");																			// Click sound
 			app.userId=$("#hm-loginPassword").val().trim().toLowerCase();							// Set password
@@ -108,13 +111,18 @@
 
 	$(window).on("resize orientationchange", ()=>{                                       			// ON WINDOW RESIZE
 		document.documentElement.style.setProperty("--maxvh", window.innerHeight+"px");				// Set CSS var for IOS 100vh isssue
-	//	app.Draw();																				// Redraw to fit screen
 		});
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function trans(msg)																				// TRANSLATE TEXT
+	{
+		if (app.language != "English")	msg="~"+msg+"~";												// If not English
+		return msg;																						// Return message
+	}
 
 	function trace(msg, p1, p2, p3, p4)																// CONSOLE 
 	{

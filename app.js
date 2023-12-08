@@ -14,6 +14,7 @@ class App  {
 		this.page=0;																				// Current page
 		this.course={name: "HelpMath", version:.9, modules:[]};										// Course data
 		this.LoadConfig("project.json");															// Load config file and set up project
+		this.language="English";																	// Language
 	}
 
 	LogIn(name, password)																		// LOG IN
@@ -23,21 +24,34 @@ class App  {
 
 	LoadConfig(name)																			// LOAD CONFIG FILE
 	{
-		let i,j;
+		let i,j,k,l,n;
 		let o=this.course.modules;																	// Point at module array
-		o.push({ name: "Math Foundations 1", id: "1000000", lessons:[] });							// Add modules
+		o.push({ name: "Math Foundations 1", id: "01000000", lessons:[] });							// Add modules
 		o.push({ name: "Math Foundations 2", id: "02000000", lessons:[] });
 		o.push({ name: "Math Foundations 3", id: "03000000", lessons:[]});
 		o.push({ name: "Numbers make sense", id: "04000000", lessons:[] });
 		o.push({ name: "Algebra - From ABC to XYZ", id: "05000000", lessons:[] });
 		o.push({ name: "Geometry - Go figure", id: "06000000", lessons:[] }); 
 		o.push({ name: "Data Analysis - How likely!", id:"07000000", lessons:[] });
-	
+
 		for (i=0;i<this.course.modules.length;++i) 	{												// For each module in course	
-			o=this.course.modules[i].lessons;														// Point at lessons in module
-			for (j=1;j<Math.random()*6+4;++j) 
-				o.push({ name: "Lesson "+j, id:"0"+(i+1)*1000000+j*10000, topics:[] });				// Add lessons
-			}
+			n=Math.random()*6+4;
+			if (!i) n=8;
+			for (j=0;j<n;++j) {																		// For each lesson
+				this.course.modules[i].lessons.push({ name: "Lesson "+(j+1), id:"0"+((i+1)*1000000+(j+1)*10000), topics:[] });				
+				for (k=0;k<7;++k) {																	// For each topic
+					this.course.modules[i].lessons[j].topics.push({ name: "Topic "+(k+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100), pages:[] }); 		
+					for (l=0;l<Math.random()*8+4;++l) {												// For each page
+						this.course.modules[i].lessons[j].topics[k].pages.push({ name: "Page "+(l+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100+(l+1)) }); 	
+						}
+					}
+				}
+		o=this.course.modules[0].lessons;														
+		o[0].name="Place Value";	o[1].name="Addition and Subtraction";	
+		o[2].name="Multiplication";	o[3].name="Division";	
+		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
+		o[6].name="Measurement";	o[7].name="Geometry";	
+		}
 	}
 
 	ShowModules(module=0)																		// SHOW MODULES TO PICK
@@ -52,15 +66,13 @@ class App  {
 			str+=`<p style="font-size:2vw;font-weight:500">and your lesson</p><div>`;				// Sub title
 			for (i=0;i<this.course.modules[module-1].lessons.length;++i) {							// For each lesson in module
 				o=this.course.modules[module-1].lessons[i];											// Point at lessons in module
-				str+=`<div class="hm-lessonbut" id="hm-lesson-${i}">${o.name}</div>`;				// Add lesson as option
+				str+=`<div class="hm-lessonbut" id="hm-lesson-${i}">${(i+1)}: ${trans(o.name)}</div>`; // Add lesson as option
 				}
 			str+="</div";																			// Close lesson div																
 			}
 		str+="</div>";																				// Close module div
 		$("#hm-screen").html(str.replace(/\t|\n|\r/g,""));											// Add markup
 			$("#hm-lesson-"+app.lesson).css("background-color","#a7cea7");
-	
-		
 	
 		$("[id^=hm-module-]").on("click", function(e) {												// ON MODULE SELECT
 			Sound("click");																			// Click sound
@@ -78,8 +90,9 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
+		let les=app.course.modules[app.module].lessons[app.lesson];									// Point at lesson
 		let str=`<div style="width:25%;position:absolute;left:48px;top:40px">
-		<img src="img/logo.png" style="width:128px"><br><br>
+		<img src="img/logo.png" style="width:100px"><br><br>
 		<img id="hm-topicTri" src="img/triangle.png" style="position:absolute;left:-9px">
 		<div id="hm-topic-0" class="hm-topicbut">Your world</div>
 		<div id="hm-topic-1" class="hm-topicbut">Learn it!</div>
@@ -89,26 +102,27 @@ class App  {
 		<div id="hm-topic-5" class="hm-topicbut">Practice test</div>
 		<div id="hm-topic-6" class="hm-topicbut">Final quiz</div>
 		<div id="hm-done" class="hm-topicbut">Quit</div>
-
 		</div>
-		<img src="video.png" class="hm-video"><br>
+			<img src="video.png" class="hm-video"><br>
 			<div id="hm-timeSlider" class="hm-timeSlider"></div>
 			<img id="hm-play" src="img/playbut.png"  title="Play lesson" style="vertical-align:-7px">
 			<div id="hm-keyterms" class="hm-topicbut" style="position:absolute;left:calc(25% - 48px);top:calc(100vh - 72px)">Keyterms</div>
-			<div id="hm-formulas" class="hm-topicbut" style="position:absolute;left:calc(25% + 80px);top:calc(100vh - 72px)">Formulas</div>
-			<img src="img/blilogo.png" style="width:15vw;position:absolute;left:40px;bottom:32px">
-			<div id="hm-audioSlider"  title="Adjust volume" class="hm-audioSlider"></div>
-			<img src="img/speaker.png"  title="Adjust volume" style="position:absolute; left:calc(100% - 185px); top:calc(100vh - 60px)">
-			<img src="img/language.png"  title="Set language" style="position:absolute; left:calc(100% - 230px); top:calc(100vh - 60px)">
-			<img src="img/helpicon.png"  title="Get help" style="position:absolute; left:calc(100% - 275px); top:calc(100vh - 60px)">
-			<img src="img/calculator.png"  title="Use calculator" style="position:absolute; left:calc(100% - 318px); top:calc(100vh - 60px)">
-			<img src="img/notepad.png"  title="Take notes" style="position:absolute; left:calc(100% - 360px); top:calc(100vh - 60px)">
+			<div id="hm-formulas" class="hm-topicbut" style="position:absolute;left:calc(25% + 60px);top:calc(100vh - 72px)">Formulas</div>
+			<img src="img/blilogo.png"style="width:15vw;position:absolute;left:40px;bottom:32px">
+			<div id="hm-audioSlider" title="Adjust volume" class="hm-audioSlider"></div>
+			<img src="img/speaker.png" title="Adjust volume" style="position:absolute; left:calc(100% - 185px); top:calc(100vh - 60px)">
+			<img src="img/language.png" title="Set language" style="position:absolute; left:calc(100% - 230px); top:calc(100vh - 60px)">
+			<img src="img/helpicon.png" title="Get help" style="position:absolute; left:calc(100% - 275px); top:calc(100vh - 60px)">
+			<img src="img/calculator.png" title="Use calculator" style="position:absolute; left:calc(100% - 318px); top:calc(100vh - 60px)">
+			<img src="img/notepad.png" title="Take notes" style="position:absolute; left:calc(100% - 360px); top:calc(100vh - 60px)">
+			<div class="hm-lessonTitle">${trans(les.name)}</div>
 			`;
 		$("#hm-screen").html(str.replace(/\t|\n|\r/g,""));											// Add markup
+		this.DrawPageBar(les.topics[app.topic].pages);												// Draw page bar
 		$("#hm-timeSlider").slider({});																// Init timeslider
 		$("#hm-audioSlider").slider({ value:50});													// Init audioslider
 		$("#hm-topic-"+app.topic).css("background-color","#009900");								// Higlight current topic
-		$("#hm-topicTri").css("top",app.topic*37+167+"px");											// Triangle
+		$("#hm-topicTri").css("top",app.topic*37+139+"px");											// Triangle
 	
 		$("#hm-play").on("click",()=>{
 			$("#hm-play").prop("src",$("#hm-play").prop("src").match(/play/i) ? "img/pausebut.png" : "img/playbut.png");
@@ -125,12 +139,22 @@ class App  {
 			});
 		}
 	
-	Draw()																						// DRAW MODULE
-	{
-		let str="Now editing module "+this.module
-		str+=`<br><br><div id="hm-goback" class="hm-bs">Return to modules</div>`
-		$("#hm-main").html(str.replace(/\t|\n|\r/g,""));											// Add markupo
-		$("#hm-goback").on("click",()=>{ $("#hm-main").fadeOut(()=>{ $("#hm-module").fadeIn(); }) })	// Go back
-	}
+		DrawPageBar(pages)																		// DRAW PAGE NAVIGATION BAR
+		{
+			let i;
+			if (!pages.length)	return;																// Quit if none
+			let pct=100/pages.length-2;																// Pct of bar per page
+			let str=`<div style="position:absolute;width:calc(75% - 580px);
+				left:calc(25vw + 205px);top:calc(100vh - 62px);height:20px">`
+				str+=`<div id="hm-pageBack" class="hm-page" style="background-color:#185b9d;border:1px solid #185b9d;cursor:pointer;width:12px;border-radius:12px 0 0 12px"><</div>`
+			for (i=0;i<pages.length;++i)															// For each page
+				str+=`<div id="hm-page-${i}" class="hm-page" style="width:${pct}%">${i+1}</div>`;
+			str+=`<div id="hm-pageNext" class="hm-page" style="background-color:#185b9d;border:1px solid #185b9d;cursor:pointer;width:12px;border-radius:0 12px 12px 0">></div></div>`
+			$("#hm-screen").append(str.replace(/\t|\n|\r/g,""));									// Add markup
+
+			$("#hm-page-0").css("background-color","#6cbe6f");
+			$("#hm-page-1").css("background-color","#009900");
+		}
+
 
 } // App class closure
