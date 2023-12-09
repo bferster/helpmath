@@ -15,15 +15,16 @@
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
 							padding:0; margin:0; width:100%; 
 							}
-		.hm-main { 			width:100%; user-select: none; display:none;
+		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-select: none; display:none; border-radius:16px; 
+							grid-template-columns:240px auto; background-color:#ddd; margin:24px 0 0 24px;
 							}
-		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%;
+		.hm-left {			padding:16px;
 							}
-		.hm-screen { 		width:calc(100vw - 48px); height:calc(100vh - 48px); user-select:none; background-color:#ddd; border-radius:16px; margin:24px 0 0 24px;
+		.hm-right { 		padding:16px;
 							}
-		.hm-video { 		width:75vw; height:calc(75vw * .5625); user-select:none; background-color:#ddd; border-radius:12px; margin:16px 0 0 calc(25vw - 64px);
+		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%; 
 							}
-		.hm-timeSlider { 	width:calc(75vw - 44px); margin:12px 8px 0 calc(25vw - 56px); background-color:#185b9d; height:4px; border-radius:12px;display: inline-block;
+		.hm-timeSlider { 	width:calc(100% - 52px); margin: 16px 12px 0 12px; background-color:#185b9d; height:4px; border-radius:12px; display:inline-block;
 							}
 		.hm-timeSlider.ui-slider .ui-slider-handle { height:12px; width:12px; cursor:pointer; background:#185b9d; border-radius:12px; 
 							}
@@ -50,17 +51,18 @@
 		.hm-modbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
-		.hm-topicbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; margin:8px;
+		.hm-topicbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; margin:12px;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
 
 		.hm-lessonbut {		cursor: pointer; color:#185b9d; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
 							font-size: 14px; background-color: #dddd; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
 							} 
-		.hm-lessonTitle {	color:#185b9d; font-size: 18px; font-weight: bold; position:absolute; left:calc(25% - 24px); top:48px; text-shadow: 0px 1px #fff;
+		.hm-lessonTitle {	color:#185b9d; font-size: 18px; font-weight: bold; position:absolute; top:48px; text-shadow: 0px 1px #fff; margin-left:16px;
 							} 
 
-		.hm-page {			font-size:10px; background-color:#999; color:#fff; border:1px solid #185b9d; display:inline-block; text-align:center;
+		.hm-page {			font-size:12px; background-color:#999; color:#fff; display:inline-block; text-align:center;
+							border-right:1px solid #ddd; 
 							}
 
 		:root  {			--maxvh: 100vh  }
@@ -81,9 +83,8 @@
 			<b>Password &nbsp; </b>  <input class='hm-is' style="width:120px;margin-top:8px" type='text' id='hm-loginPassword'><br><br>
 			<div class="hm-bs" id="hm-login">GO</div>
 		</div>
-		<div class="hm-main" id="hm-main">
-			<div class="hm-screen" id="hm-screen"></div>
-		</div>
+		<div class="hm-main" id="hm-main"></div>
+		
 	
 <script>
 
@@ -95,7 +96,7 @@
 		app=new App();																				// Load app
 		let url=window.location.search.substring(1);												// Get query line
 		let v=url.split("&");																		// Get options
-	//	$("#hm-main").fadeIn();app.ShowLesson(); return
+//		$("#hm-main").fadeIn();app.ShowLesson(); return
 		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
 			Sound("click");																			// Click sound
