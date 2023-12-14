@@ -8,31 +8,26 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	
 		<script src="app.js"></script>
+		<script src="video.js"></script>
+		<script src="interact.js"></script>
+
 	</head>
 	<style>
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
 							padding:0; margin:0; width:100%; 
 							}
 		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-select: none; display:none; border-radius:16px; 
-							grid-template-columns:240px auto; background-color:#ddd; margin:24px 0 0 24px;
-							}
-		.hm-left {			padding:16px;
-							}
-		.hm-right { 		padding:16px;
+							background-color:#ddd; margin:24px 0 0 24px;
 							}
 		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%; 
 							}
+		.hm-screen {		width:68%;  border-radius:12px; max-height:calc(100vh - 180px); overflow:hidden; margin:8px 16% 0 16%
+							}
 		.hm-timeSlider { 	width:calc(100% - 52px); margin: 16px 12px 0 12px; background-color:#185b9d; height:4px; border-radius:12px; display:inline-block;
 							}
-		.hm-timeSlider.ui-slider .ui-slider-handle { height:12px; width:12px; cursor:pointer; background:#185b9d; border-radius:12px; 
+		.hm-timeSlider.ui-slider .ui-slider-handle { height:16px; width:16px; cursor:pointer; background:#185b9d; border-radius:12px; margin-top:-2px;
 							}
-		.hm-audioSlider { 	position:absolute; width:100px; left: calc(100% - 150px); top:calc(100vh - 50px);
-							background-color:#999; height:4px; border-radius:12px;
-							}
-		.hm-audioSlider.ui-slider .ui-slider-handle { height:12px; width:12px; cursor:pointer; background:#999; border-radius:12px;
-							}					
 		.hm-module {		text-align:center; color:#185b9d; width:50%; margin-left:25%;
 							}
 		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select:none;	
@@ -54,20 +49,29 @@
 		.hm-topicbut {		cursor: pointer; color:#fff; text-align: center; border-radius: 16px; width: fit-content; margin:12px;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
 							} 
-
-		.hm-lessonbut {		cursor: pointer; color:#185b9d; text-align: center; border-radius: 16px; width: fit-content; display: inline-block; margin:8px;
+		.hm-iconButton {	margin:0 0 0 16px; cursor:pointer;
+							}
+		.hm-audioSlider { 	width:80px; background-color:#aaa; height:4px; border-radius:12px; margin-left:16px; display:inline-block; vertical-align:8px;
+							}
+		.hm-audioSlider.ui-slider .ui-slider-handle { height:28px; width:28px; cursor:pointer; margin-top:-4px; background:url("img/speaker.png") no-repeat;
+							}					
+		.hm-lessonbut {		cursor: pointer; color:#185b9d; text-align: center; border-radius: 16px; width: fit-content; display:inline-block; margin:8px;
 							font-size: 14px; background-color: #dddd; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
 							} 
-		.hm-lessonTitle {	color:#185b9d; font-size: 18px; font-weight: bold; position:absolute; top:48px; text-shadow: 0px 1px #fff; margin-left:16px;
+		.hm-lessonTitle {	color:#f46200; font-size:2.5vw; font-weight:bold; font-family:ComicSans,sans-serif; 
 							} 
-
+		.hm-lessonSubTitle{	color:#185b9d; font-size:1.4vw; font-weight:bold;  margin-top:3px;
+							} 
 		.hm-page {			font-size:12px; background-color:#999; color:#fff; display:inline-block; text-align:center;
 							border-right:1px solid #ddd; 
+							}
+		.hm-next {			position:absolute; width:6vw; left:calc(90vw - 24px); top:calc(5.8vw + 15vw + 56px)
 							}
 
 		:root  {			--maxvh: 100vh  }
 		table  {			border-spacing: 0px;  }
 		@font-face {  		font-family: SegoeUI; src: url(img/segoeui.ttf);   }
+		@font-face {  		font-family: ComicSans; src: url(img/comicbd.ttf); }
 
 		body ::-webkit-scrollbar { width: 9px; height:8px } 
 		body ::-webkit-scrollbar-track { background: transparent; }
