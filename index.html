@@ -17,7 +17,7 @@
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
 							padding:0; margin:0; width:100%; 
 							}
-		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-select: none; display:none; border-radius:16px; 
+		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-selec: none; display:none; border-radius:16px; 
 							background-color:#ddd; margin:24px 0 0 24px;
 							}
 		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%; 
@@ -37,8 +37,8 @@
 							border-radius: 8px; background-color: #eee; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							font-size: 14px; text-align:center; display:none;
 							}
-		.hm-is {			border-radius:16px; padding:0 8px; width:250px; height: 24px;
-							border:1px solid #999; font-size: 13px;
+		.hm-is {			border-radius:16px; padding:0 8px; width:250px; height: 24px;++
+							border:1px solid #999; font-size: 13px;++
 							}
 		.hm-bs {			cursor: pointer; color:#fff; text-align: center; border-radius: 16px; display: inline-block;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
@@ -62,8 +62,7 @@
 							} 
 		.hm-lessonSubTitle{	color:#185b9d; font-size:1.4vw; font-weight:bold;  margin-top:3px;
 							} 
-		.hm-page {			font-size:12px; background-color:#999; color:#fff; display:inline-block; text-align:center;
-							border-right:1px solid #ddd; 
+		.hm-page {			font-size:12px; background-color:#999; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; 
 							}
 		.hm-next {			position:absolute; width:6vw; left:calc(90vw - 24px); top:calc(5.8vw + 15vw + 56px)
 							}
@@ -92,8 +91,9 @@
 <script>
 
 	var app=null;																					// Holds app
-	var vid=null;
-	var act=null;
+	var vid=null;																					// Video module
+	var act=null;																					// Interaction module
+	var les=null;																					// Point to current lesson
 	var isMobile=false;																				// Mobile?
 	var isLocal=window.location.host == "localhost" ? true : false;
 
@@ -101,8 +101,6 @@
 		app=new App();																				// Load app
 		let url=window.location.search.substring(1);												// Get query line
 		let v=url.split("&");																		// Get options
-		$("#hm-main").fadeIn();app.ShowLesson(); return
-		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
 			Sound("click");																			// Click sound
 			app.userId=$("#hm-loginPassword").val().trim().toLowerCase();							// Set password
@@ -110,9 +108,13 @@
 			})
 
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
+			if (e.which == 109)	vid.RunPlayer("seek",vid.curTime-.1);			
+			if (e.which == 107)	vid.RunPlayer("seek",vid.curTime+.1);			
 			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
 				}
 			});
+		$("#hm-main").fadeIn();app.ShowLesson(); return
+		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		});
 
 	$(window).on("resize orientationchange", ()=>{                                       			// ON WINDOW RESIZE

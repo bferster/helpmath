@@ -28,7 +28,7 @@ class App  {
 
 	LoadConfig(name)																			// LOAD CONFIG FILE
 	{
-		let i,j,k,l,n;
+		let i,j,k,l,n,n2;
 		let o=this.course.modules;																	// Point at module array
 		o.push({ name: "Math Foundations 1", id: "01000000", lessons:[] });							// Add modules
 		o.push({ name: "Math Foundations 2", id: "02000000", lessons:[] });
@@ -46,8 +46,10 @@ class App  {
 				this.course.modules[i].lessons[j].title="Lesson Title";
 				for (k=0;k<7;++k) {																	// For each topic
 					this.course.modules[i].lessons[j].topics.push({ name: "Topic "+(k+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100), pages:[] }); 		
-					for (l=0;l<Math.random()*8+4;++l) {												// For each page
-						this.course.modules[i].lessons[j].topics[k].pages.push({ name: "Page "+(l+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100+(l+1)) }); 	
+					n2=Math.random()*8+4
+					if (!i) n2=5;
+					for (l=0;l<n2;++l) {															// For each page
+						this.course.modules[i].lessons[j].topics[k].pages.push({ name: "Page "+(l+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100+(l+1)), start:0, end:400 }); 	
 						}
 					}
 				}
@@ -56,7 +58,12 @@ class App  {
 		o[0].name="Place Value";	o[1].name="Addition and Subtraction";	
 		o[2].name="Multiplication";	o[3].name="Division";	
 		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
-		o[6].name="Measurement";	o[7].name="Geometry";	
+		o[6].name="Measurement";	o[7].name="Geometry";
+		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=13;
+		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=144;
+		o[0].topics[0].pages[2].start=149;	o[0].topics[0].pages[2].end=246.5;
+		o[0].topics[0].pages[3].start=251;	o[0].topics[0].pages[3].end=301;
+		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=346;
 		}
 	}
 
@@ -96,7 +103,7 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
-		let les=app.course.modules[app.module].lessons[app.lesson];									// Point at lesson
+		les=app.course.modules[app.module].lessons[app.lesson];										// Point at lesson
 /*		let str=`<img src="img/logo.png" style="width:3vw"><br><br>
 				<img id="hm-topicTri" src="img/triangle.png" style="position:absolute;left:36px">
 		$("#hm-left").html(str.replace(/\t|\n|\r/g,""));										// Add left side markup
@@ -116,7 +123,7 @@ class App  {
 				<div class="hm-lessonSubTitle">${trans(les.name)}: ${trans(app.topics[app.topic])}</div>
 			</div>
 			<div id="hm-screen" class="hm-screen">
-				<div id="hm-video" class="hm-video"><img src="video.png" style="width:100%"></div>
+				<div id="hm-video" style="border-radius:12px;overflow:hidden;border:3px solid #185b9d"></div>
 				<img id="hm-next" src="img/next.png" class="hm-next" title="Next / proxima">
 
 				<div id="hm-playerControl">
@@ -127,7 +134,7 @@ class App  {
 		</div>`
 		$("#hm-main").html(str.replace(/\t|\n|\r/g,""));											// Add  markup
 		
-		vid.RunPlayer("init");
+		vid.RunPlayer("init");																		// Init video player
 		this.DrawPageBar(les.topics[app.topic].pages);												// Draw page bar
 		str=`<div id="hm-appControls" style="position:absolute;left:30px;top:calc(100vh - 64px);width:calc(100% - 80px)">
 			<div style="float:right;margin-top:4px">
@@ -139,8 +146,16 @@ class App  {
 		</div>`;
 		$("#hm-main").append(str.replace(/\t|\n|\r/g,""));											// Add right side markup
 		$("#hm-main").css("display","block");
-		$("#hm-timeSlider").slider({});																// Init timeslider
-		$("#hm-audioSlider").slider({ value:50 });													// Init audioslider
+		$("#hm-timeSlider").slider({																// Init timeslider
+			slide:(event, ui)=>{																	// After a drag, seek player
+				let time=ui.value/100*vid.dur+vid.start;											// Get time
+				vid.RunPlayer("seek", time); 
+				}			
+			});	
+		$("#hm-audioSlider").slider({ 																// Init audioslider
+			value:vid.volume,																		// Default middle
+			stop:(event, ui)=>{	vid.RunPlayer("volume", ui.value); } 								// After a drag, set player volume (0-100)
+			});	
 		$("#hm-topic-"+app.topic).css("background-color","#009900");								// Higlight current topic
 		$("#hm-topicTri").css("top",app.topic*41+184+"px");											// Triangle
 
@@ -149,10 +164,10 @@ class App  {
 			vid.RunPlayer($("#hm-play").prop("src").match(/play/i) ? "pause" : "play");				// Control video
 			});
 	
-		$("#hm-close").on("click",()=>{
-			app.ShowModules(app.module);															// PICK A MODULE
-			});
-		
+		$("#hm-close").on("click",()=>{	app.ShowModules(app.module); });							// PICK A MODULE
+			
+		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click") });						// NEXT
+
 		$("[id^=hm-topic-]").on("click", function(e) {												// ON TOPIC SELECT
 			Sound("click");																			// Click sound
 			app.topic=e.target.id.substring(9);														// Get module index
