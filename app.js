@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAIN APP CLASS
+// MAIN APP CLASS																			GLOBALS: app, vid, act
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class App  {																					
@@ -17,6 +17,8 @@ class App  {
 		this.LoadConfig("project.json");															// Load config file and set up project
 		this.language="English";																	// Language
 		this.topics=["Your world","Learn it!","Play it!","Try it!","Practice test","Quiz"];			// Topic names
+		vid=new Video();																			// Load video module
+		act=new Interact();																			// Load interaction module
 	}
 
 	LogIn(name, password)																		// LOG IN
@@ -102,11 +104,11 @@ class App  {
 			let str=`<img src="img/logo2.png" style="float:left;height:5vw;margin:16px 0 0 16px">
 			<img id="hm-close" src="img/closebut.png" title="Close / Cerrar"style="width:20px;float:right;margin:16px 16px 0 0;cursor:pointer">
 	
-			<div style="text-align:center;width:calc(16% - 32px);position:absolute;left:32px;top:20vw">
+			<div style="text-align:center;width:calc(16% - 16px);position:absolute;left:32px;top:20vw">
 				<div id="hm-map" class="hm-topicbut">${trans("Map")}</div>
 				<div id="hm-keyterms" class="hm-topicbut">${trans("Keyterms")}</div>
 				<div id="hm-formulas" class="hm-topicbut">${trans("Formulas")}</div>
-				<div id="hm-spanish" class="hm-topicbut"  title="Hear in Spanish">En esta paginá</div>
+				<div id="hm-spanish" class="hm-topicbut"  title="Hear page in Spanish">Habla paginá</div>
 			</div>
 			
 			<div style="text-align:center;width:84%;padding-top:12px;margin-bottom:16px;">
@@ -124,6 +126,8 @@ class App  {
 		<div id="hm-pages" style="margin-top:8px;width:100%;text-align:center"></div>
 		</div>`
 		$("#hm-main").html(str.replace(/\t|\n|\r/g,""));											// Add  markup
+		
+		vid.RunPlayer("init");
 		this.DrawPageBar(les.topics[app.topic].pages);												// Draw page bar
 		str=`<div id="hm-appControls" style="position:absolute;left:30px;top:calc(100vh - 64px);width:calc(100% - 80px)">
 			<div style="float:right;margin-top:4px">
@@ -142,6 +146,7 @@ class App  {
 
 		$("#hm-play").on("click",()=>{
 			$("#hm-play").prop("src",$("#hm-play").prop("src").match(/play/i) ? "img/pausebut.png" : "img/playbut.png");
+			vid.RunPlayer($("#hm-play").prop("src").match(/play/i) ? "pause" : "play");				// Control video
 			});
 	
 		$("#hm-close").on("click",()=>{

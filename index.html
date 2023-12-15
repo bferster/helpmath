@@ -88,11 +88,12 @@
 			<div class="hm-bs" id="hm-login">GO</div>
 		</div>
 		<div class="hm-main" id="hm-main"></div>
-		
 	
 <script>
 
 	var app=null;																					// Holds app
+	var vid=null;
+	var act=null;
 	var isMobile=false;																				// Mobile?
 	var isLocal=window.location.host == "localhost" ? true : false;
 
@@ -100,7 +101,7 @@
 		app=new App();																				// Load app
 		let url=window.location.search.substring(1);												// Get query line
 		let v=url.split("&");																		// Get options
-//		$("#hm-main").fadeIn();app.ShowLesson(); return
+		$("#hm-main").fadeIn();app.ShowLesson(); return
 		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		$("#hm-login").on("click",()=> { 															// ON LOG IN
 			Sound("click");																			// Click sound
