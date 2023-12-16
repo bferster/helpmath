@@ -59,11 +59,12 @@ class App  {
 		o[2].name="Multiplication";	o[3].name="Division";	
 		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
 		o[6].name="Measurement";	o[7].name="Geometry";
-		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=13;
-		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=144;
-		o[0].topics[0].pages[2].start=149;	o[0].topics[0].pages[2].end=246.5;
-		o[0].topics[0].pages[3].start=251;	o[0].topics[0].pages[3].end=301;
-		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=346;
+		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=13; 	o[0].topics[0].pages[0].status=0;
+		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=144;	o[0].topics[0].pages[1].status=0;
+		o[0].topics[0].pages[2].start=149;	o[0].topics[0].pages[2].end=246.5;	o[0].topics[0].pages[2].status=0;
+		o[0].topics[0].pages[3].start=251;	o[0].topics[0].pages[3].end=301; 	o[0].topics[0].pages[3].status=0;
+		o[0].topics[0].pages[3].triggers=[{ time:301-251, id:"C0-L0-T0-A1" }];
+		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=346;	o[0].topics[0].pages[4].status=0;
 		}
 	}
 
@@ -103,7 +104,10 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
-		les=app.course.modules[app.module].lessons[app.lesson];										// Point at lesson
+		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
+		curPage=curLesson.topics[app.topic].pages[app.page];										// Point at page
+		
+
 /*		let str=`<img src="img/logo.png" style="width:3vw"><br><br>
 				<img id="hm-topicTri" src="img/triangle.png" style="position:absolute;left:36px">
 		$("#hm-left").html(str.replace(/\t|\n|\r/g,""));										// Add left side markup
@@ -119,11 +123,11 @@ class App  {
 			</div>
 			
 			<div style="text-align:center;width:84%;padding-top:12px;margin-bottom:16px;">
-				<div class="hm-lessonTitle"<div>${trans(les.title)}</div>
-				<div class="hm-lessonSubTitle">${trans(les.name)}: ${trans(app.topics[app.topic])}</div>
+				<div class="hm-lessonTitle"<div>${trans(curLesson.title)}</div>
+				<div class="hm-lessonSubTitle">${trans(curLesson.name)}: ${trans(app.topics[app.topic])}</div>
 			</div>
 			<div id="hm-screen" class="hm-screen">
-				<div id="hm-video" style="border-radius:12px;overflow:hidden;border:3px solid #185b9d"></div>
+				<div id="hm-video" style="border-radius:12px;overflow:hidden;border:3px solid #185b9d;position:relative"></div>
 				<img id="hm-next" src="img/next.png" class="hm-next" title="Next / proxima">
 
 				<div id="hm-playerControl">
@@ -135,7 +139,8 @@ class App  {
 		$("#hm-main").html(str.replace(/\t|\n|\r/g,""));											// Add  markup
 		
 		vid.RunPlayer("init");																		// Init video player
-		this.DrawPageBar(les.topics[app.topic].pages);												// Draw page bar
+		this.DrawPageBar(curLesson.topics[app.topic].pages);												// Draw page bar
+		curPage.status=1;
 		str=`<div id="hm-appControls" style="position:absolute;left:30px;top:calc(100vh - 64px);width:calc(100% - 80px)">
 			<div style="float:right;margin-top:4px">
 				<img src="img/notepad.png" title="Take notes"class="hm-iconButton">
@@ -147,10 +152,11 @@ class App  {
 		$("#hm-main").append(str.replace(/\t|\n|\r/g,""));											// Add right side markup
 		$("#hm-main").css("display","block");
 		$("#hm-timeSlider").slider({																// Init timeslider
-			slide:(event, ui)=>{																	// After a drag, seek player
+			slide:(event, ui)=>{																	// When dragging, seek player
 				let time=ui.value/100*vid.dur+vid.start;											// Get time
 				vid.RunPlayer("seek", time); 
-				}			
+				},		
+			stop:()=>{ vid.ResetTriggers();	}														// After a drag, reset triggers live
 			});	
 		$("#hm-audioSlider").slider({ 																// Init audioslider
 			value:vid.volume,																		// Default middle
@@ -161,7 +167,7 @@ class App  {
 
 		$("#hm-play").on("click",()=>{
 			$("#hm-play").prop("src",$("#hm-play").prop("src").match(/play/i) ? "img/pausebut.png" : "img/playbut.png");
-			vid.RunPlayer($("#hm-play").prop("src").match(/play/i) ? "pause" : "play");				// Control video
+			vid.RunPlayer($("#hm-play").prop("src").match(/play/i) ? "play" : "pause");				// Control video
 			});
 	
 		$("#hm-close").on("click",()=>{	app.ShowModules(app.module); });							// PICK A MODULE
@@ -183,11 +189,11 @@ class App  {
 		let slop=50/pages.length;
 		let str=`<div id="hm-pageBack" class="hm-page" style="background-color:#185b9d;cursor:pointer;width:16px;border-radius:12px 0 0 12px"><</div>`
 		for (i=0;i<pages.length;++i)																// For each page
-			str+=`<div id="hm-page-${i}" class="hm-page" style="width:calc(${pct}% - ${slop}px)" - >${i+1}</div>`;
+			str+=`<div id="hm-page-${i}" class="hm-page" style="width:calc(${pct}% - ${slop}px); 
+				background-color:${pages[i].status ? "#6cbe6f" : "#aaa"}">${i+1}</div>`;
 		str+=`<div id="hm-pageNext" class="hm-page" style="background-color:#185b9d;cursor:pointer;width:16px;border-radius:0 12px 12px 0">></div>`
 		$("#hm-pages").html(str.replace(/\t|\n|\r/g,""));											// Add markup
 		
-		$("#hm-page-0").css("background-color","#6cbe6f");
 		$("#hm-page-"+app.page).css("background-color","#009900");
 		
 		$("[id^=hm-page-]").on("click", function(e) {												// ON TOPIC SELECT

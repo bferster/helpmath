@@ -62,7 +62,7 @@
 							} 
 		.hm-lessonSubTitle{	color:#185b9d; font-size:1.4vw; font-weight:bold;  margin-top:3px;
 							} 
-		.hm-page {			font-size:12px; background-color:#999; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; 
+		.hm-page {			font-size:12px; background-color:#aaa; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; 
 							}
 		.hm-next {			position:absolute; width:6vw; left:calc(90vw - 24px); top:calc(5.8vw + 15vw + 56px)
 							}
@@ -93,7 +93,8 @@
 	var app=null;																					// Holds app
 	var vid=null;																					// Video module
 	var act=null;																					// Interaction module
-	var les=null;																					// Point to current lesson
+	var curLesson=null;																				// Point to current lesson
+	var curPage=null;																				// Points at current page
 	var isMobile=false;																				// Mobile?
 	var isLocal=window.location.host == "localhost" ? true : false;
 
@@ -113,7 +114,8 @@
 			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
 				}
 			});
-		$("#hm-main").fadeIn();app.ShowLesson(); return
+
+		if (isLocal) { $("#hm-main").fadeIn();app.ShowLesson(); 	return;	}						// Debug mode
 		$("#hm-login").fadeIn(1000);																// Fade in splash page
 		});
 
