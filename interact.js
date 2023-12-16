@@ -10,13 +10,13 @@ class Interact  {
 		let o={ id:"C0-L0-T0-A1", type:"dragsort", items:[] };
 		o.back="back.png";		
 		o.doneSound="done";		o.doneAct="done";
-		o.items.push( { startX:11.5,	startY:29.5, 	endX:44.6,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:22.6,	startY:29.5, 	endX:77.9,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:33.6,	startY:29.5, 	endX:55.8,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:44.6,	startY:29.5, 	endX:67.0,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:55.8,	startY:29.5, 	endX:11.5,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:67.0,	startY:29.5, 	endX:22.6,	 endY:58.1, 	width:8.9});		
-		o.items.push( { startX:77.9,	startY:29.5, 	endX:33.6,	 endY:58.1, 	width:8.9});		
+		o.items.push( { startX:5.8,		startY:28.2, 	endX:44.5,	 endY:58.3, 	width:10.5});		
+		o.items.push( { startX:18.6,	startY:28.2, 	endX:83.2,	 endY:58.2, 	width:10.5});		
+		o.items.push( { startX:31.7,	startY:28.2, 	endX:57.4,	 endY:58.2, 	width:10.5});		
+		o.items.push( { startX:44.3,	startY:28.2, 	endX:70.4,	 endY:58.2, 	width:10.5});		
+		o.items.push( { startX:57.4,	startY:28.2, 	endX:5.8,	 endY:58.2, 	width:10.5});		
+		o.items.push( { startX:70.7,	startY:28.2, 	endX:18.6,	 endY:58.2, 	width:10.5});		
+		o.items.push( { startX:83.2,	startY:28.2, 	endX:31.7,	 endY:58.2, 	width:10.5});		
 		this.acts[o.id]=o;
 	}
 
@@ -49,7 +49,7 @@ class Interact  {
 								for (i=0;i<act.items.length;++i)	if (!act.items[i].status) break;// Go through status
 							if (i == act.items.length) {											// All correct!
 								Sound("img/yea.mp3");												// Yea sound
-								$("#hm-success").animate({ width:"50%" }) 							// Zoom out
+								$("#hm-success").animate({ width:"50%"}, 1000) 						// Zoom out
 								}
 							Sound("img/tada.mp3");													// Correct sound
 							}

@@ -59,12 +59,12 @@ class App  {
 		o[2].name="Multiplication";	o[3].name="Division";	
 		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
 		o[6].name="Measurement";	o[7].name="Geometry";
-		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=13; 	o[0].topics[0].pages[0].status=0;
-		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=144;	o[0].topics[0].pages[1].status=0;
-		o[0].topics[0].pages[2].start=149;	o[0].topics[0].pages[2].end=246.5;	o[0].topics[0].pages[2].status=0;
-		o[0].topics[0].pages[3].start=251;	o[0].topics[0].pages[3].end=301; 	o[0].topics[0].pages[3].status=0;
-		o[0].topics[0].pages[3].triggers=[{ time:301-251, id:"C0-L0-T0-A1" }];
-		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=346;	o[0].topics[0].pages[4].status=0;
+		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=11.613; o[0].topics[0].pages[0].status=0;
+		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=143.8;	o[0].topics[0].pages[1].status=0;
+		o[0].topics[0].pages[2].start=150;	o[0].topics[0].pages[2].end=242.5;	o[0].topics[0].pages[2].status=0;
+		o[0].topics[0].pages[3].start=245;	o[0].topics[0].pages[3].end=300; 	o[0].topics[0].pages[3].status=0;
+		o[0].topics[0].pages[3].triggers=[{ time:299.5-245, id:"C0-L0-T0-A1" }];
+		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=338;	o[0].topics[0].pages[4].status=0;
 		}
 	}
 
