@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAIN APP CLASS																GLOBALS: isMobile
+// VIDEO CLASS																GLOBALS: isMobile
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Video  {																					
@@ -23,6 +23,7 @@ class Video  {
 		this.timer=setInterval(this.OnPlayerTimer,200);												// Set timer ~5ps
 		this.readySent=false;																		// To init only once
 		this.triggers=[];																			// Triggers	
+		this.links=[];																				// Hyperlinks	
 	}	
 
 	OnPlayerTimer()																				// HANDLE FRAME TIMER
@@ -49,18 +50,18 @@ class Video  {
 
 	GetPlayerTime()																				// GET TIME FROM PLAYER
 	{
-	//	trace( vid.player.currentTime)
 		return vid.player.currentTime;																// Return time
 	}
 
 	ResetTriggers()																				// RESET TRIGGERS TO LIVE
 	{
+		$("#hm-overlay").html("");																	// Clear overlay
 		if (curPage.triggers) vid.triggers=JSON.parse(JSON.stringify(curPage.triggers));			// Clone triggers from page
 	}
 	
 	RunPlayer(what, param)																		// PLAYER ACTIONS
 	{
-		let str;
+		let i,str;
 		if (what == "init") {																		// INIT
 			this.src=`assets/C${app.module}/C${app.module}-L${app.lesson}-T${app.topic}.mp4`;		// Make source
 			this.curTime=this.start=curPage.start;													// Init to beginning
@@ -69,7 +70,7 @@ class Video  {
 				$("#"+this.div).html("");															// Add video tag
 			let base=this.src.match(/(.*)\.[^.]+$/i)[1];											// Extract base
 			this.ResetTriggers();																	// Make trigger live			
-			str="<video id='vplayer' width='100%' height='100%'";									// Video tag
+			str="<video id='vplayer' width='100%'";													// Video tag
 			if ((this.controls == "true") || isMobile)												// If has controls or mobile
 				str+= " controls";																	// Add native controls to player
 			str+=">";																				// Close tag
@@ -87,27 +88,21 @@ class Video  {
 			this.readySent=false;																	// Ready not sent
 	
 			myVid.onloadstart=function() {															// When loaded
-				let p=$("#vplayer")[0];																// Point to player
-				vid.readySent=false;																	// Ready not sent
+				vid.readySent=false;																// Ready not sent
 				};
-							
 			myVid.oncanplay=function() {															// When ready
 				let p=$("#vplayer")[0];																// Point to player
 				if (!this.src.match(/\.mp3/i)) 														// If video
 				vid.aspect=p.videoHeight/p.videoWidth;												// Set aspect 				
-				if (!vid.readySent)																// Not sent yet
-					vid.RunPlayer("ready");															// Set up player		
+				if (!vid.readySent)	vid.RunPlayer("ready");											// Not sent yet, set up player		
 				vid.readySent=true;																	// Ready sent
 				};
-
 			myVid.onended=function() {																// When done
 				vid.RunPlayer("pause");																// Pause
 				};
-
 			myVid.onplay=function() {																// When playing
 				vid.status="play";																	// Set mode
 				};
-	
 			myVid.onpause=function() {																// When paused
 				vid.status="pause";																	// Set mode
 				};
@@ -117,10 +112,19 @@ class Video  {
 			myVid.addEventListener("play",myVid.onplay,false);	 									// Add listener 
 			myVid.addEventListener("pause",myVid.onpause,false);	 								// Add listener 
 			
-			$("#hm-overlay").on("click", (e)=>{
-				let x=e.offsetX/$("#hm-overlay").width();
-				let y=e.offsetY/$("#hm-overlay").height();
-				trace(Number(x.toPrecision(3)),Number(y.toPrecision(3)))
+			$("#hm-overlay").on("click", (e)=>{														// ON OVERLAY CLICK
+				let x=e.offsetX/$("#hm-overlay").width();											// Get x pos
+				let y=e.offsetY/$("#hm-overlay").height();											// Y
+				trace(x.toFixed(2),y.toFixed(2));													// Log
+				let o=curPage.links;																// Point at links
+				for (i=0;i<curPage.links.length;++i) {												// For each one
+					if ((o[i].start > vid.time) || (vid.time > o[i].end)) 	continue;				// Not in time range
+					if (Math.abs(y-o[i].y) > .03) 							continue;				// Not in y range
+					if (Math.abs(x-o[i].x) > .007*o[i].name.length) 		continue;				// Not in x range
+					vid.RunPlayer("pause");															// Pause video
+					$("#hm-play").prop("src","img/playbut.png");									// Play icon button
+					key.Show(o[i].name);															// Show keyterm
+					}
 				});
 			}
 		else if (what == "ready") {																	// When ready
@@ -146,7 +150,7 @@ class Video  {
 			this.curTime=param;																		// Set time
 			if (!this.player) return;																// If no player yet, quit
 			if (this.player.readyState)	this.player.currentTime=this.curTime;						// If ready, cue it up
-			trace("Seek = "+Number(param.toPrecision(3)));										// Show time
+			trace("Seek = "+(param-vid.start).toFixed(2),param.toFixed(2));							// Show clip and total time
 			}
 		else if (what == "pause") {																	// PAUSE
 			this.status="pause";																	// Set mode

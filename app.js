@@ -19,6 +19,7 @@ class App  {
 		this.topics=["Your world","Learn it!","Play it!","Try it!","Practice test","Quiz"];			// Topic names
 		vid=new Video();																			// Load video module
 		act=new Interact();																			// Load interaction module
+		key=new Keyterms();																			// Load keyterms module
 	}
 
 	LogIn(name, password)																		// LOG IN
@@ -49,7 +50,7 @@ class App  {
 					n2=Math.random()*8+4
 					if (!i) n2=5;
 					for (l=0;l<n2;++l) {															// For each page
-						this.course.modules[i].lessons[j].topics[k].pages.push({ name: "Page "+(l+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100+(l+1)), start:0, end:400 }); 	
+						this.course.modules[i].lessons[j].topics[k].pages.push({ name: "Page "+(l+1), id:"0"+((i+1)*1000000+(j+1)*10000+(k+1)*100+(l+1)), start:0, end:400, links:[] }); 	
 						}
 					}
 				}
@@ -65,7 +66,13 @@ class App  {
 		o[0].topics[0].pages[3].start=245;	o[0].topics[0].pages[3].end=300; 	o[0].topics[0].pages[3].status=0;
 		o[0].topics[0].pages[3].triggers=[{ time:299.5-245, id:"C0-L0-T0-A1" }];
 		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=338;	o[0].topics[0].pages[4].status=0;
-		}
+		o[0].topics[0].pages[4].links[0]={name:"place value", start:21, end:29, x:.65, y:.10 };
+		o[0].topics[0].pages[4].links[1]={name:"compare", start:21, end:29, x:.22, y:.17 };
+		o[0].topics[0].pages[4].links[2]={name:"order", start:21, end:29, x:.32, y:.17 };
+		o[0].topics[0].pages[4].links[3]={name:"round", start:21, end:29, x:.47, y:.17 };
+		o[0].topics[0].pages[4].links[4]={name:"whole numbers", start:21, end:29, x:.61, y:.17 };
+	}
+
 	}
 
 	ShowModules(module=0)																		// SHOW MODULES TO PICK
@@ -91,13 +98,13 @@ class App  {
 		$("[id^=hm-module-]").on("click", function(e) {												// ON MODULE SELECT
 			Sound("click");																			// Click sound
 			app.module=e.target.id.substring(10);													// Get module index
-			app.ShowModules(app.module-0+1)
+			app.ShowModules(app.module-0+1);														// Show module picker
 			});
 
 		$("[id^=hm-lesson-]").on("click", function(e) {												// ON LESSON SELECT
 			Sound("click");																			// Click sound
 			app.lesson=e.target.id.substring(10);													// Get lesson index
-			app.topic=0;																			// Reset topic
+			app.topic=app.page=0;																	// Reset topic/page
 			app.ShowLesson();																		// Show lesson
 			});
 	}
@@ -127,12 +134,12 @@ class App  {
 				<div class="hm-lessonSubTitle">${trans(curLesson.name)}: ${trans(app.topics[app.topic])}</div>
 			</div>
 			<div id="hm-screen" class="hm-screen">
-				<div id="hm-video" style="border-radius:12px;overflow:hidden;border:3px solid #185b9d;position:relative"></div>
+				<div id="hm-video" class="hm-video"></div>
 				<img id="hm-next" src="img/next.png" class="hm-next" title="Next / proxima">
 
 				<div id="hm-playerControl">
 					<div id="hm-timeSlider" class="hm-timeSlider"></div>
-					<img id="hm-play" src="img/playbut.png"  title="Play lesson" style="vertical-align:-8px">
+					<img id="hm-play" src="img/playbut.png"  title="Play lesson" style="vertical-align:-8px;cursor:pointer;">
 				</div>
 		<div id="hm-pages" style="margin-top:8px;width:100%;text-align:center"></div>
 		</div>`
@@ -179,6 +186,8 @@ class App  {
 			app.topic=e.target.id.substring(9);														// Get module index
 			app.ShowLesson()
 			});
+
+		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
 		}
 	
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR

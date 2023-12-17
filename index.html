@@ -12,18 +12,22 @@
 		<script src="app.js"></script>
 		<script src="video.js"></script>
 		<script src="interact.js"></script>
+		<script src="keyterms.js"></script>
 
 	</head>
 	<style>
 		 body { 			font-family:SegoeUI,Verdana,Geneva,sans-serif; font-size:16px; box-sizing:border-box; 
 							padding:0; margin:0; width:100%; 
 							}
-		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-selec: none; display:none; border-radius:16px; 
+		.hm-main { 			width:calc(100vw - 48px); height:calc(100vh - 48px); user-select: none; display:none; border-radius:16px; 
 							background-color:#ddd; margin:24px 0 0 24px;
 							}
 		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%; 
 							}
 		.hm-screen {		width:60%; border-radius:12px; max-height:calc(100vh - 180px); overflow:hidden; margin:8px 16% 0 16%
+							}
+
+		.hm-video {			border-radius:12px; overflow:hidden; border:3px solid #185b9d; position:relative;
 							}
 		.hm-timeSlider { 	width:calc(100% - 52px); margin: 16px 12px 0 12px; background-color:#185b9d; height:4px; border-radius:12px; display:inline-block;
 							}
@@ -63,10 +67,14 @@
 							} 
 		.hm-lessonSubTitle{	color:#185b9d; font-size:1.4vw; font-weight:bold;  margin-top:3px;
 							} 
-		.hm-page {			font-size:12px; background-color:#aaa; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; 
+		.hm-page {			font-size:12px; background-color:#aaa; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; cursor:pointer;
 							}
-		.hm-next {			position:absolute; width:6vw; left:calc(84vw - 24px); top:calc(5.8vw + 15vw + 56px)
+		.hm-next {			position:absolute; width:6vw; left:calc(84vw - 24px); top:calc(5.8vw + 15vw + 56px); cursor:pointer;
 							}
+
+		.hm-terms {			position:absolute;  user-select:none; top:0; left:0; padding:24px; width:100%; height:100%; background-color:#a4baec
+							}
+
 
 		:root  {			--maxvh: 100vh  }
 		table  {			border-spacing: 0px;  }
@@ -75,8 +83,8 @@
 
 		body ::-webkit-scrollbar { width: 9px; height:8px } 
 		body ::-webkit-scrollbar-track { background: transparent; }
-		body ::-webkit-scrollbar-thumb { border-radius:8px ;background:#a4baec }
-		body ::-webkit-scrollbar-thumb:hover { background: #a4baec }
+		body ::-webkit-scrollbar-thumb { border-radius:8px ;background:#fff }
+		body ::-webkit-scrollbar-thumb:hover { background: #fff }
 </style>
 
 	<body>
@@ -94,6 +102,7 @@
 	var app=null;																					// Holds app
 	var vid=null;																					// Video module
 	var act=null;																					// Interaction module
+	var key=null;																					// Keyterms module
 	var curLesson=null;																				// Point to current lesson
 	var curPage=null;																				// Points at current page
 	var isMobile=false;																				// Mobile?
