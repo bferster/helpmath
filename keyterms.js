@@ -10,27 +10,60 @@ class Keyterms  {
 		this.ExtractTerms();																		// Extract terms
 	}
 
-	Show(term="place value")
+	Show(term="")
 	{
-		let h=$("#hm-overlay").height();															// Get container height
+		let i;
 		$("#hm-terms").remove();																	// Kill old one
 		let v=this.GetTerm(term);																	// Get term data
-		if (!v)	return;																				// Quit if no data
+		if (!v) v=["","","",""];																	// No term found
 		vid.RunPlayer("pause");																		// Pause video
 		$("#hm-play").prop("src","img/playbut.png");												// Play icon button
 		
 		let str=`<div id="hm-terms" class="hm-terms">
-			<img src="img/closebut.png" onclick="$('#hm-terms').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px 32px;cursor:pointer">
-			<img src="assets/terms/${"place value"}.png" style="width:40%;position:absolute;right:80px;top:40px">
-			<div style="width:calc(50% - 72px">
-			<b style="color:#185b9d;font-size:1.4vw">ENGLISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw;margin-bottom:8px">${v[1].replace(/~/g," ")}</b>
-			<div style="height:${h*.26}px;overflow-y:auto">${v[3]}</div>
-			<b style="color:#185b9d;font-size:1.5vw">SPANISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw">${v[2].replace(/~/g," ")}</b>
-			<br><br>
-			<div style="height:${h*.26}px;overflow-y:auto">${v[4]}</div>
-		</div>`;
-			
+			<img src="img/closebut.png" onclick="$('#hm-terms').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
+				<div id="hm-termData">
+					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-size:2vw;text-align:center"><b>Key Terms</b></div>
+					<img src="assets/terms/${term.toLowerCase()}.png" style="width:calc(50% - 72px);position:absolute;right:72px;top:54px">
+					<div style="width:calc(50% - 48px);padding-right:24px">
+					<b style="color:#185b9d;font-size:1.4vw">ENGLISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw;margin-bottom:8px">${v[1].replace(/~/g," ")}</b>
+					<br><br>
+					<div style="max-height:7vh;overflow-y:auto">${v[3]}</div>
+					<br>
+					<b style="color:#185b9d;font-size:1.5vw">SPANISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw">${v[2].replace(/~/g," ")}</b>
+					<br><br>
+					<div style="max-height:7vh;overflow-y:auto">${v[4]}</div>
+				</div>
+			<div style="position:absolute;left:50%;top:calc(2vw + 24px);height:calc(100% - 2vw - 64px);background-color:#185b9d;width:1px"></div>
+		</div>
+		<div id="hm-alpha" style="display:flex;justify-content:space-between;position:absolute;left:24px;bottom:8px;width:calc(100% - 48px)">`;
+		for (i=65;i<91;++i)	str+=`<div id="hm-alphaterm-${i}" class="hm-alphaterm"> ${String.fromCharCode(i)}</div>`;
+		str+=`</div></div>`;
 		$("#hm-video").append(str.replace(/\t|\n|\r/g,""));											// Add markup
+		if (!term)  this.ShowTerms(65);																// Show the A's if no term set
+
+		$("[id^=hm-alphaterm-]").on("click", (e)=> {												// ON LETTER SELECT
+			Sound("click");																			// Click sound
+			this.ShowTerms(e.target.id.substring(13));												// Show letter terms
+			});
+	}
+
+	ShowTerms(letter, language=1)																// SHOW TERMS FOR A LETTER
+	{
+		let i,term;
+		let r=new RegExp(`"${String.fromCharCode(letter)}(.?).*":`,"ig");							// Regex to get line
+		let s=this.terms.match(r);																	// Get terms
+		let str=`<div style="position:absolute;width:100%;max-height:calc(100% - 60px);overflow-y:auto;color:#185b9d;column-count:3;">`;
+		for (i=0;i<s.length;++i) {
+			term=(""+s[i].match(/"(.*)~LNG~(.*)"/i)[language]).replace(/~/g," "); 							// Get term
+			str+=`<div class="hm-termitem" id="hm-getterm-${term}">${term}</div>`
+			}
+		str+="</div>"	
+		$("#hm-termData").html(str.replace(/\t|\n|\r/g,""));										// Add markup
+
+		$("[id^=hm-getterm-]").on("click", (e)=> {													// ON LETTER SELECT
+			Sound("click");																			// Click sound
+			this.Show(e.target.id.substring(11));													// Show term
+			});
 	}
 
 	GetTerm(term="place value")																	// GET TERM DATA

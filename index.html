@@ -42,8 +42,7 @@
 							border-radius: 8px; background-color: #eee; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							font-size: 14px; text-align:center; display:none;
 							}
-		.hm-is {			border-radius:16px; padding:0 8px; width:250px; height: 24px;++
-							border:1px solid #999; font-size: 13px;++
+		.hm-is {			border-radius:16px; padding:0 8px; width:250px; height: 24px; border:1px solid #999; font-size: 13px;
 							}
 		.hm-bs {			cursor: pointer; color:#fff; text-align: center; border-radius: 16px; display: inline-block;
 							font-size: 16px; background-color: #185b9d; padding: 4px 12px 4px 12px; vertical-align:3px; user-select:none;
@@ -72,7 +71,13 @@
 		.hm-next {			position:absolute; width:6vw; left:calc(84vw - 24px); top:calc(5.8vw + 15vw + 56px); cursor:pointer;
 							}
 
-		.hm-terms {			position:absolute;  user-select:none; top:0; left:0; padding:24px; width:100%; height:100%; background-color:#a4baec
+		.hm-terms {			position:absolute;  user-select:none; top:0; left:0; padding:24px; width:calc(100% - 48px); height:calc(100% - 48px); background-color:#ced6e7;
+							}
+		.hm-alphaterm {		display:inline-block; color:#fff; border-radius:12px; margin-right: 4px; background-color:#185b9d; 
+							width:16px; height:15px; cursor:pointer; font-size:10px; text-align:center; padding-top:1px;
+							}
+		.hm-termitem {		cursor: pointer; color:#000099; border-radius: 16px; width: fit-content; margin:8px; font-size: 14px; 
+							background-color: #dddd; padding: 1px 8px 1px 8px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
 							}
 
 
@@ -83,7 +88,7 @@
 
 		body ::-webkit-scrollbar { width: 9px; height:8px } 
 		body ::-webkit-scrollbar-track { background: transparent; }
-		body ::-webkit-scrollbar-thumb { border-radius:8px ;background:#fff }
+		body ::-webkit-scrollbar-thumb { border-radius:8px ;background:#185b9d }
 		body ::-webkit-scrollbar-thumb:hover { background: #fff }
 </style>
 
