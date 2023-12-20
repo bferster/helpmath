@@ -10,6 +10,7 @@ class Keyterms  {
 		this.ExtractTerms();																		// Extract terms
 	}
 
+
 	Show(term="")
 	{
 		let i;
@@ -22,18 +23,16 @@ class Keyterms  {
 		let str=`<div id="hm-terms" class="hm-terms">
 			<img src="img/closebut.png" onclick="$('#hm-terms').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
 				<div id="hm-termData">
-					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-size:2vw;text-align:center"><b>Key Terms</b></div>
-					<img src="assets/terms/${term.toLowerCase()}.png" style="width:calc(50% - 72px);position:absolute;right:48px;top:66px">
-					<div style="width:calc(50% - 48px);padding-right:24px">
-					<b style="color:#185b9d;font-size:1.4vw">ENGLISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw;margin-bottom:8px">${v[1].replace(/~/g," ")}</b>
-					<br><br>
-					<div style="max-height:12vh;overflow-y:auto">${v[3]}</div>
-					<br>
-					<b style="color:#185b9d;font-size:1.5vw">SPANISH -</b> &nbsp; <b style="color:#000;font-size:1.4vw">${v[2].replace(/~/g," ")}</b>
-					<br><br>
-					<div style="max-height:12vh;overflow-y:auto">${v[4]}</div>
-				</div>
-			<div style="position:absolute;left:50%;top:calc(2vw + 24px);height:calc(100% - 2vw - 64px);background-color:#185b9d;width:1px"></div>
+					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-family:ComicSans,sans-serif;font-size:2vw;text-align:center"><b>Key Terms</b></div>
+					<img src="assets/terms/${term.toLowerCase().replace(/\//g,"_")}.gif" style="width:calc(50% - 48px);position:absolute;right:24px;top:66px">
+					<div id="hm-dataLeft" style="position:absolute;width:calc(50% - 60px);height:calc(100% - 2vw - 68px);display:flex;flex-direction:column">
+						<div style="font-weight:bold;color:#f46200;font-size:1.4vw">ENGLISH - &nbsp;<span style="color:#185b9d">${v[1].replace(/~/g," ")}</span></div>
+						<div class="hm-termdesc" st>${v[3]}</div>
+						<br>
+						<div style="font-weight:bold;color:#f46200;font-size:1.4vw">SPANISH - &nbsp;<span style="color:#185b9d">${v[2].replace(/~/g," ")}</span></div>
+						<div class="hm-termdesc">${v[4]}</div>
+					</div>
+				<div style="position:absolute;left:50%;top:calc(2vw + 24px);height:calc(100% - 2vw - 64px);background-color:#185b9d;width:1px"></div>
 		</div>
 		<div id="hm-alpha" style="display:flex;justify-content:space-between;position:absolute;left:24px;bottom:8px;width:calc(100% - 48px)">`;
 		for (i=65;i<91;++i)	str+=`<div id="hm-alphaterm-${i}" class="hm-alphaterm"> ${String.fromCharCode(i)}</div>`;
@@ -52,7 +51,7 @@ class Keyterms  {
 		let i,term;
 		let r=new RegExp(`"${String.fromCharCode(letter)}(.?).*":`,"ig");							// Regex to get line
 		let s=this.terms.match(r);																	// Get terms
-		let str=`<div style="position:absolute;width:100%;max-height:calc(100% - 60px);overflow-y:auto;color:#185b9d;column-count:3;">`;
+		let str=`<div style="position:absolute;width:calc(100% - 48px);max-height:calc(100% - 60px);overflow-y:auto;color:#185b9d;column-count:3;">`;
 		for (i=0;i<s.length;++i) {
 			term=(""+s[i].match(/"(.*)~LNG~(.*)"/i)[language]).replace(/~/g," "); 							// Get term
 			str+=`<div class="hm-termitem" id="hm-getterm-${term}">${term}</div>`

@@ -68,7 +68,7 @@
 							} 
 		.hm-page {			font-size:12px; background-color:#aaa; color:#fff; display:inline-block; text-align:center; border-right:1px solid #ddd; cursor:pointer;
 							}
-		.hm-next {			position:absolute; width:6vw; left:calc(84vw - 24px); top:calc(5.8vw + 15vw + 56px); cursor:pointer;
+		.hm-next {			position:absolute; width:6vw; left:calc(77vw - 0px); top:calc(5.8vw + 15vw + 56px); cursor:pointer;
 							}
 
 		.hm-terms {			position:absolute;  user-select:none; top:0; left:0; padding:24px; width:calc(100% - 48px); height:calc(100% - 48px); background-color:#ced6e7;
@@ -79,17 +79,19 @@
 		.hm-termitem {		cursor: pointer; color:#000099; border-radius: 16px; width: fit-content; margin:8px; font-size: 14px; 
 							background-color: #dddd; padding: 1px 8px 1px 8px; vertical-align:3px; user-select:none; border: 1px solid #185b9d;
 							}
+		.hm-termdesc {		overflow-y:auto; border:1px solid #185b9d; border-radius:8px; padding:8px; font-size:14px; width:100%; margin:8px 0;
+							}
 
 
-		:root  {			--maxvh: 100vh  }
+		:root  {			--maxvh: 100vh;  }
 		table  {			border-spacing: 0px;  }
 		@font-face {  		font-family: SegoeUI; src: url(img/segoeui.ttf);   }
 		@font-face {  		font-family: ComicSans; src: url(img/comicbd.ttf); }
 
 		body ::-webkit-scrollbar { width: 9px; height:8px } 
-		body ::-webkit-scrollbar-track { background: transparent; }
+		body ::-webkit-scrollbar-track { background:#ccc; border-radius:0 8px 8px 0; border:1px solid #185b9d }
 		body ::-webkit-scrollbar-thumb { border-radius:8px ;background:#185b9d }
-		body ::-webkit-scrollbar-thumb:hover { background: #fff }
+		body ::-webkit-scrollbar-thumb:hover { background: #999 }
 </style>
 
 	<body>

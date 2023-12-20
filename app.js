@@ -125,7 +125,7 @@ class App  {
 			<div style="text-align:center;width:calc(16% - 16px);position:absolute;left:32px;top:20vw">
 				<div id="hm-map" class="hm-topicbut">${trans("Map")}</div>
 				<div id="hm-keyterms" class="hm-topicbut">${trans("Keyterms")}</div>
-				<div id="hm-formulas" class="hm-topicbut">${trans("Formulas")}</div>
+				<!-- div id="hm-formulas" class="hm-topicbut">${trans("Formulas")}</div -->
 				<div id="hm-spanish" class="hm-topicbut"  title="Hear page in Spanish">Habla paginá</div>
 			</div>
 			
