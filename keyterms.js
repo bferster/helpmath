@@ -15,13 +15,14 @@ class Keyterms  {
 	{
 		let i;
 		$("#hm-terms").remove();																	// Kill old one
+		$("#hm-keyterms").css("background-color","#009900");											// Hilite button
 		let v=this.GetTerm(term);																	// Get term data
 		if (!v) v=["","","",""];																	// No term found
 		vid.RunPlayer("pause");																		// Pause video
 		$("#hm-play").prop("src","img/playbut.png");												// Play icon button
 		
 		let str=`<div id="hm-terms" class="hm-terms">
-			<img src="img/closebut.png" onclick="$('#hm-terms').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
+			<img src="img/closebut.png" onclick="$('#hm-terms').remove();$('#hm-keyterms').css('background-color','#185b9d')" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
 				<div id="hm-termData">
 					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-family:ComicSans,sans-serif;font-size:2vw;text-align:center"><b>Key Terms</b></div>
 					<img src="assets/terms/${term.toLowerCase().replace(/\//g,"_")}.gif" style="width:calc(50% - 48px);position:absolute;right:24px;top:66px">
@@ -53,7 +54,7 @@ class Keyterms  {
 		let s=this.terms.match(r);																	// Get terms
 		let str=`<div style="position:absolute;width:calc(100% - 48px);max-height:calc(100% - 60px);overflow-y:auto;color:#185b9d;column-count:3;">`;
 		for (i=0;i<s.length;++i) {
-			term=(""+s[i].match(/"(.*)~LNG~(.*)"/i)[language]).replace(/~/g," "); 							// Get term
+			term=(""+s[i].match(/"(.*)~LNG~(.*)"/i)[language]).replace(/~/g," "); 					// Get term
 			str+=`<div class="hm-termitem" id="hm-getterm-${term}">${term}</div>`
 			}
 		str+="</div>"	
@@ -203,7 +204,7 @@ class Keyterms  {
 		  "Currency~LNG~Divisa": "Money in any form used as an exchange; often represented by paper money or coins.~LNG~Dinero en cualquier forma usado como intercambio, por lo general se representa por papel moneda o monedas.",
 		  "Curved~LNG~Curvo": "Not straight. Parentheses ( ) are curved lines.~LNG~Que no es recto. Los paréntesis. Que tienen forma de arcos ( ).",
 		  "Customary~unit~of~measurement~LNG~Unidad~estándar~de~medida": "The name of an amount or quantity of measure.~LNG~El nombre de una cantidad del tamaño o medición de algo.",
-		  "Cyclic~(trend)~LNG~Cíclica~(tendencia)": "Data that changes direction between going up and down repeatedly; happening at regular intervals.~LNG~Datos que cambian de dirección yendo de arriba hacia abajo repetidamente en intervalos regulares.",
+		  "Cyclic~trend~LNG~Cíclica~tendencia": "Data that changes direction between going up and down repeatedly; happening at regular intervals.~LNG~Datos que cambian de dirección yendo de arriba hacia abajo repetidamente en intervalos regulares.",
 		  "Cylinder~LNG~Cilindro": "A solid figure with two parallel bases that are equal&nbsp;circles.~LNG~Cuerpo geométrico con dos bases paralelas que son círculos iguales.",
 		  "Data~LNG~Datos": "Data is a set of information, a set of values, or a set of numbers.~LNG~Los datos  son un conjunto de información, de valores o un conjunto de números.",
 		  "Data~tables~LNG~Tablas~de~datos": "Data&nbsp;tables are organized by columns and rows&nbsp;created to easily view information.~LNG~Las tablas de datos están organizadas en columnas y filas creadas para visualizar la información más fácilmente.",

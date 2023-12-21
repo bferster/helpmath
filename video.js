@@ -63,6 +63,7 @@ class Video  {
 	{
 		let i,str;
 		if (what == "init") {																		// INIT
+			$("#hm-play").prop("src","img/pausebut.png");											// Pause icon button, since we do autoplay
 			this.src=`assets/C${app.module}/C${app.module}-L${app.lesson}-T${app.topic}.mp4`;		// Make source
 			this.curTime=this.start=curPage.start;													// Init to beginning
 			this.end=curPage.end;																	// Get end

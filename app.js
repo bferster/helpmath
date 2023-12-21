@@ -60,19 +60,25 @@ class App  {
 		o[2].name="Multiplication";	o[3].name="Division";	
 		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
 		o[6].name="Measurement";	o[7].name="Geometry";
-		o[0].topics[0].pages[0].start=4;	o[0].topics[0].pages[0].end=11.613; o[0].topics[0].pages[0].status=0;
-		o[0].topics[0].pages[1].start=18.6;	o[0].topics[0].pages[1].end=143.8;	o[0].topics[0].pages[1].status=0;
-		o[0].topics[0].pages[2].start=150;	o[0].topics[0].pages[2].end=242.5;	o[0].topics[0].pages[2].status=0;
-		o[0].topics[0].pages[3].start=245;	o[0].topics[0].pages[3].end=300; 	o[0].topics[0].pages[3].status=0;
-		o[0].topics[0].pages[3].triggers=[{ time:299.5-245, id:"C0-L0-T0-A1" }];
-		o[0].topics[0].pages[4].start=310;	o[0].topics[0].pages[4].end=338;	o[0].topics[0].pages[4].status=0;
-		o[0].topics[0].pages[4].links[0]={name:"place value", start:21, end:29, x:.65, y:.10 };
-		o[0].topics[0].pages[4].links[1]={name:"compare", start:21, end:29, x:.22, y:.17 };
-		o[0].topics[0].pages[4].links[2]={name:"order", start:21, end:29, x:.32, y:.17 };
-		o[0].topics[0].pages[4].links[3]={name:"round", start:21, end:29, x:.47, y:.17 };
-		o[0].topics[0].pages[4].links[4]={name:"whole numbers", start:21, end:29, x:.61, y:.17 };
-	}
-
+		o=this.course.modules[0].lessons[0].topics[0].pages;
+		o[0].start=4;		o[0].end=11.61; o[0].status=0;
+		o[1].start=18.6;	o[1].end=143.8;	o[1].status=0;
+		o[2].start=150;		o[2].end=242.5;	o[2].status=0;
+		o[3].start=245;		o[3].end=300; 	o[3].status=0;		o[3].triggers=[{ time:299.5-245, id:"C0-L0-T0-A1" }];
+		o[4].start=310;		o[4].end=338;	o[4].status=0;
+		o[4].links[0]={name:"place value", start:21, end:29, x:.65, y:.10 };
+		o[4].links[1]={name:"compare", start:21, end:29, x:.22, y:.17 };
+		o[4].links[2]={name:"order", start:21, end:29, x:.32, y:.17 };
+		o[4].links[3]={name:"round", start:21, end:29, x:.47, y:.17 };
+		o[4].links[4]={name:"whole numbers", start:21, end:29, x:.61, y:.17 };
+		o=this.course.modules[0].lessons[0].topics[1].pages;	
+		o[0]={ name:"Place value chart/models"};
+		o[1]={ name:"Place value place"};
+		o[2]={ name:"Ones group / thousands group"};
+		o[3]={ name:"Word form"};
+		o[4]={ name:"Standard/expanded form"};
+		o[5]={ name:"Rounding"};
+		}
 	}
 
 	ShowModules(module=0)																		// SHOW MODULES TO PICK
@@ -113,22 +119,14 @@ class App  {
 	{
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		curPage=curLesson.topics[app.topic].pages[app.page];										// Point at page
-		
-
-/*		let str=`<img src="img/logo.png" style="width:3vw"><br><br>
-				<img id="hm-topicTri" src="img/triangle.png" style="position:absolute;left:36px">
-		$("#hm-left").html(str.replace(/\t|\n|\r/g,""));										// Add left side markup
-*/
 			let str=`<img src="img/logo2.png" style="float:left;height:5vw;margin:16px 0 0 16px">
 			<img id="hm-close" src="img/closebut.png" title="Close / Cerrar"style="width:20px;float:right;margin:16px 16px 0 0;cursor:pointer">
-	
 			<div style="text-align:center;width:calc(16% - 16px);position:absolute;left:32px;top:20vw">
-				<div id="hm-map" class="hm-topicbut">${trans("Map")}</div>
+				<div id="hm-mapbut" class="hm-topicbut">${trans("Map")}</div>
 				<div id="hm-keyterms" class="hm-topicbut">${trans("Keyterms")}</div>
 				<!-- div id="hm-formulas" class="hm-topicbut">${trans("Formulas")}</div -->
 				<div id="hm-spanish" class="hm-topicbut"  title="Hear page in Spanish">Habla paginá</div>
 			</div>
-			
 			<div style="text-align:center;width:84%;padding-top:12px;margin-bottom:16px;">
 				<div class="hm-lessonTitle"<div>${trans(curLesson.title)}</div>
 				<div class="hm-lessonSubTitle">${trans(curLesson.name)}: ${trans(app.topics[app.topic])}</div>
@@ -174,19 +172,12 @@ class App  {
 
 		$("#hm-play").on("click",()=>{
 			$("#hm-play").prop("src",$("#hm-play").prop("src").match(/play/i) ? "img/pausebut.png" : "img/playbut.png");
-			vid.RunPlayer($("#hm-play").prop("src").match(/play/i) ? "play" : "pause");				// Control video
+			vid.RunPlayer($("#hm-play").prop("src").match(/pause/i) ? "play" : "pause");			// Control video
 			});
 	
 		$("#hm-close").on("click",()=>{	app.ShowModules(app.module); });							// PICK A MODULE
-			
-		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click") });						// NEXT
-
-		$("[id^=hm-topic-]").on("click", function(e) {												// ON TOPIC SELECT
-			Sound("click");																			// Click sound
-			app.topic=e.target.id.substring(9);														// Get module index
-			app.ShowLesson()
-			});
-
+		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
+		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
 		}
 	
@@ -221,6 +212,57 @@ class App  {
 			app.ShowLesson()
 			});
 	}
+
+	ShowTopicMenu()																				// SHOW TOPIC MENU
+	{
+		$("#hm-map").remove();																		// Kill old one
+		$("#hm-mapbut").css("background-color","#009900");											// Hilite button
+		let str=`<div id="hm-map" class="hm-terms">
+			<img src="img/closebut.png" onclick="$('#hm-map').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
+				<div id="hm-mapData">
+					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-family:ComicSans,sans-serif;font-size:2vw;text-align:center"><b>The Map</b></div>
+						<div id="hm-dataLeft" style="position:absolute;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column">
+						<div>
+							<div class="hm-topicbut" id="hm-topic-0">${trans("Your World")}</div>
+							<div class="hm-topicbut" id="hm-topic-1">${trans("Important words")}</div>
+							<div class="hm-topicbut" id="hm-topic-2">${trans("Learn it")}</div>
+							<div class="hm-topicbut" id="hm-topic-3">${trans("Try it")}</div>
+							<div class="hm-topicbut" id="hm-topic-4">${trans("Play it")}</div>
+							<div class="hm-topicbut" id="hm-topic-5">${trans("Practice test")}</div>
+							<div class="hm-topicbut" id="hm-topic-6">${trans("Final quiz")}</div>
+						</div>
+					</div>
+				<div id="hm-dataRight" style="position:absolute;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column;right:24px"></div>
+			</div>`
+
+		$("#hm-video").append(str.replace(/\t|\n|\r/g,""));											// Add markup
+
+		$("[id^=hm-topic-]").on("click", function(e) {												// ON TOPIC SELECT
+			Sound("click");																			// Click sound
+			app.topic=e.target.id.substring(9);														// Get module index
+			$("[id^=hm-topic-]").css("background-color","#185b9d;");								// Reset all
+			$("#hm-topic-"+app.topic).css("background-color","#009900");							// Hilite button
+			app.page=0;																				// Start on 1st page
+			if ((app.topic == 1) || (app.topic == 2) || (app.topic == 5))	pages();				// Has specific pages
+			else 															app.ShowLesson()		// Go to topic
+			});
+
+		function pages() {																			// SHOW PAGES
+			let i, str="<div>";
+			let o=curLesson.topics[app.topic];														// Point at topic
+				for (i=0;i<o.pages.length;++i)														// For each page
+					str+=`<div class="hm-termitem" id="hm-topicpage-${i}">${trans((o.pages[i].name))}</div>`;// Add item
+			str+="</div>";	
+			$("#hm-dataRight").html(str.replace(/\t|\n|\r/g,""));									// Add markup
+
+			$("[id^=hm-topicpage-]").on("click", function(e) {										// ON TOPIC SELECT
+				Sound("click");																		// Click sound
+				app.page=e.target.id.substring(13);													// Get module index
+				app.ShowLesson()																	// Go to to page
+				});
+		
+			}
+		}
 
 
 } // App class closure
