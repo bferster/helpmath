@@ -38,7 +38,7 @@
 		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select:none;	
 							border-radius: 8px; background-color: #fff; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							}
-		.hm-popup {			position:absolute;  width: auto; max-width:200px; padding: 12px; left: calc(50% - 100px); top: calc(66% - 50px);
+		.hm-popup {			position:absolute;  width:auto; max-width:400px; padding: 12px; left: calc(50% - 200px); top: calc(66% - 50px);
 							border-radius: 8px; background-color: #eee; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							font-size: 14px; text-align:center; display:none;
 							}
@@ -128,7 +128,10 @@
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
 			if (e.which == 109)	vid.RunPlayer("seek",vid.curTime-.1);			
 			if (e.which == 107)	vid.RunPlayer("seek",vid.curTime+.1);			
+			trace(e.which)
 			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
+				vid.SetTimes();
+			
 				}
 			});
 

@@ -16,7 +16,6 @@ class App  {
 		this.course={name: "HelpMath", version:.9, modules:[]};										// Course data
 		this.LoadConfig("project.json");															// Load config file and set up project
 		this.language="English";																	// Language
-		this.topics=["Your world","Learn it!","Play it!","Try it!","Practice test","Quiz"];			// Topic names
 		vid=new Video();																			// Load video module
 		act=new Interact();																			// Load interaction module
 		key=new Keyterms();																			// Load keyterms module
@@ -31,13 +30,13 @@ class App  {
 	{
 		let i,j,k,l,n,n2;
 		let o=this.course.modules;																	// Point at module array
-		o.push({ name: "Math Foundations 1", id: "01000000", lessons:[] });							// Add modules
-		o.push({ name: "Math Foundations 2", id: "02000000", lessons:[] });
-		o.push({ name: "Math Foundations 3", id: "03000000", lessons:[]});
-		o.push({ name: "Numbers make sense", id: "04000000", lessons:[] });
-		o.push({ name: "Algebra - From ABC to XYZ", id: "05000000", lessons:[] });
-		o.push({ name: "Geometry - Go figure", id: "06000000", lessons:[] }); 
-		o.push({ name: "Data Analysis - How likely!", id:"07000000", lessons:[] });
+		o.push({ name: "Math Foundations 1", id: "01000000", lessons:[], title:"Counting on Numbers" });	// Add modules
+		o.push({ name: "Math Foundations 2", id: "02000000", lessons:[], title:"Module 2" });
+		o.push({ name: "Math Foundations 3", id: "03000000", lessons:[], title:"Module 3"});
+		o.push({ name: "Numbers make sense", id: "04000000", lessons:[], title:"Module 4" });
+		o.push({ name: "Algebra - From ABC to XYZ", id: "05000000", lessons:[], title:"Module 5 "});
+		o.push({ name: "Geometry - Go figure", id: "06000000", lessons:[], title:"Module 6" }),
+		o.push({ name: "Data Analysis - How likely!", id:"07000000", lessons:[], title:"Module 7" });
 
 		for (i=0;i<this.course.modules.length;++i) 	{												// For each module in course	
 			n=Math.random()*6+4;
@@ -54,32 +53,18 @@ class App  {
 						}
 					}
 				}
+			}
+	
+		this.ExtractData();			
 		o=this.course.modules[0].lessons;
-		o[0].title="Counting on Numbers";														
-		o[0].name="Place Value";	o[1].name="Addition and Subtraction";	
-		o[2].name="Multiplication";	o[3].name="Division";	
-		o[4].name="Fractions";		o[5].name="Decinmals and Money";	
-		o[6].name="Measurement";	o[7].name="Geometry";
-		o=this.course.modules[0].lessons[0].topics[0].pages;
-		o[0].start=4;		o[0].end=11.61; o[0].status=0;
-		o[1].start=18.6;	o[1].end=143.8;	o[1].status=0;
-		o[2].start=150;		o[2].end=242.5;	o[2].status=0;
-		o[3].start=245;		o[3].end=300; 	o[3].status=0;		o[3].triggers=[{ time:299.5-245, id:"C0-L0-T0-A1" }];
-		o[4].start=310;		o[4].end=338;	o[4].status=0;
-		o[4].links[0]={name:"place value", start:21, end:29, x:.65, y:.10 };
-		o[4].links[1]={name:"compare", start:21, end:29, x:.22, y:.17 };
-		o[4].links[2]={name:"order", start:21, end:29, x:.32, y:.17 };
-		o[4].links[3]={name:"round", start:21, end:29, x:.47, y:.17 };
-		o[4].links[4]={name:"whole numbers", start:21, end:29, x:.61, y:.17 };
-		o=this.course.modules[0].lessons[0].topics[1].pages;	
-		o[0]={ name:"Place value chart/models"};
-		o[1]={ name:"Place value place"};
-		o[2]={ name:"Ones group / thousands group"};
-		o[3]={ name:"Word form"};
-		o[4]={ name:"Standard/expanded form"};
-		o[5]={ name:"Rounding"};
-		}
-	}
+		o.push({ name:"Addition and Subtraction", topics:[]} );	
+		o.push({ name:"Multiplication", topics:[] });	
+		o.push({ name:"Division", topics:[] });	
+		o.push({ name:"Fractions", topics:[] });	
+		o.push({ name:"Decimals and Money", topics:[] });	
+		o.push({ name:"Measurement", topics:[] });	
+		o.push({ name:"Geometry", topics:[] });	
+}
 
 	ShowModules(module=0)																		// SHOW MODULES TO PICK
 	{
@@ -128,8 +113,8 @@ class App  {
 				<div id="hm-spanish" class="hm-topicbut"  title="Hear page in Spanish">Habla paginá</div>
 			</div>
 			<div style="text-align:center;width:84%;padding-top:12px;margin-bottom:16px;">
-				<div class="hm-lessonTitle"<div>${trans(curLesson.title)}</div>
-				<div class="hm-lessonSubTitle">${trans(curLesson.name)}: ${trans(app.topics[app.topic])}</div>
+				<div class="hm-lessonTitle"<div>${trans(app.course.modules[app.module].title)}</div>
+				<div class="hm-lessonSubTitle">${trans(curLesson.name)}: ${trans(curLesson.topics[app.topic].name)}</div>
 			</div>
 			<div id="hm-screen" class="hm-screen">
 				<div id="hm-video" class="hm-video"></div>
@@ -185,12 +170,12 @@ class App  {
 	{
 		let i;
 		if (!pages.length)	return;																	// Quit if none
-		let pct=100/(pages.length+1);																// Pct of bar per page
-		let slop=50/pages.length;
+		let pct=100/(pages.length);																	// Pct of bar per page
+		let slop=50/(pages.length-1);
 		let str=`<div id="hm-pageBack" class="hm-page" style="background-color:#185b9d;cursor:pointer;width:16px;border-radius:12px 0 0 12px"><</div>`
-		for (i=0;i<pages.length;++i)																// For each page
+		for (i=1;i<pages.length;++i)																// For each page
 			str+=`<div id="hm-page-${i}" class="hm-page" style="width:calc(${pct}% - ${slop}px); 
-				background-color:${pages[i].status ? "#6cbe6f" : "#aaa"}">${i+1}</div>`;
+				background-color:${pages[i].status ? "#6cbe6f" : "#aaa"}">${i}</div>`;
 		str+=`<div id="hm-pageNext" class="hm-page" style="background-color:#185b9d;cursor:pointer;width:16px;border-radius:0 12px 12px 0">></div>`
 		$("#hm-pages").html(str.replace(/\t|\n|\r/g,""));											// Add markup
 		
@@ -263,6 +248,67 @@ class App  {
 		
 			}
 		}
+
+	ExtractData()																				// GET COURSE DATA
+	{
+		this.course.modules[0]={ name:"Math Foundations 1", id: "01000000", title:"Counting on Numbers",
+			lessons:[{ name: "Place Value",	topics:[
+					{ name: "Real World", pages:[
+						{ name: "1", start:4,    end:11.61, 	status:0 },
+						{ name: "2", start:18.6, end:143.8, 	status:0 },
+						{ name: "3", start:150,  end:242.5, 	status:0 },
+						{ name: "4", start:245,  end:300, 	status:0, triggers:[
+							{ time:299.5-245, id:"C0-L0-T0-A1" } 	]},
+						{ name: "", start:310, 	end:338,	status:0, links:[ 
+							{ name:"place value", start:21, end:29, x:.65, y:.10 },
+							{ name:"compare", start:21, end:29, x:.22, y:.17 },
+							{ name:"order", start:21, end:29, x:.32, y:.17 },
+							{ name:"round",	start:21, end:29, x:.47, y:.17 },
+							{ name:"whole numbers", start:21, end:29, x:.61,y:.17 } ]},
+						]},	// TOPIC
+					{ name: "Important Words", pages:[						
+						{ name: "", start:4,  end:12.6, status:0 },
+						{ name: "Place-value chart/models", start:13.6,  end:72.1, status:0 },
+						{ name: "Place-value", start:75.6,  end:1000, status:0 },
+						{ name: "Ones / thousands group", start:13.6,  end:1000, status:0 },
+						{ name: "Word form", start:75.6,  end:1000, status:0 },
+						{ name: "Standard/expanded form", start:75.6,  end:1000, status:0 },
+						{ name: "Rounding", start:75.6,  end:1000, status:0 },
+						]},	// TOPIC
+					{ name: "Learn It!", pages:[						
+						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						]},	// TOPIC
+					{ name: "Play It!", pages:[						
+						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						]},	// TOPIC
+					{ name: "Practice Test", pages:[						
+						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						]},	// TOPIC
+					{ name: "Final Quiz", pages:[						
+						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						]}], // TOPICS END
+					
+			}],  // LESSON END
+		}	// MODULES
+			
+	}	
+
+	/*
+  	"Introduction" 
+    "Reading and Writing Whole Numbers in Word and Standard Forms" 
+    "Using Models to Represent Numbers"
+    "Identifying Place Value of Whole Numbers"
+    "Reading Numbers Practice"
+    "Write Numbers"
+    "Write Numbers Practice" 
+    "Reading and Writing Numbers in Expanded Form"
+    "Word, Standard and Expanded Form Practice"
+	"Round Whole Numbers Using a Number Line"
+    "Round Whole Numbers to the Nearest Thousands Using Rules"
+    "Rounding Whole Numbers Practice"
+    "Compare Whole Numbers"
+    "Order Whole Numbers Problem Solving"
+*/
 
 
 } // App class closure

@@ -34,6 +34,7 @@ class Video  {
 		vid.time=vid.curTime-vid.start;																// Time within span
 		vid.pct=vid.time/vid.dur;																	// Calc pct of clip done
 		$("#hm-timeSlider").slider("value",vid.pct*100);											// Set slider
+		$("#auth-time").val(vid.curTime.toFixed(2));												// Set authoring time
 		let n=vid.triggers.length;																	// Number of triggers
 		for (i=0;i<n;++i) {																			// For each
 			o=vid.triggers[i];																		// Point at trigger
@@ -68,7 +69,7 @@ class Video  {
 			this.curTime=this.start=curPage.start;													// Init to beginning
 			this.end=curPage.end;																	// Get end
 			this.dur=this.end-this.start;															// Set duration
-				$("#"+this.div).html("");															// Add video tag
+			$("#"+this.div).html("");																// Add video tag
 			let base=this.src.match(/(.*)\.[^.]+$/i)[1];											// Extract base
 			this.ResetTriggers();																	// Make trigger live			
 			str="<video id='vplayer' width='100%'";													// Video tag
@@ -151,6 +152,7 @@ class Video  {
 			this.curTime=param;																		// Set time
 			if (!this.player) return;																// If no player yet, quit
 			if (this.player.readyState)	this.player.currentTime=this.curTime;						// If ready, cue it up
+			$("#auth-time").val((vid.curTime).toFixed(2));											// Set authoring time
 			trace("Seek = "+(param-vid.start).toFixed(2),param.toFixed(2));							// Show clip and total time
 			}
 		else if (what == "pause") {																	// PAUSE
@@ -163,6 +165,40 @@ class Video  {
 			this.volume=param;																		// Save volume
 			this.player.volume=param/100;															// Set device
 			}
+	}
+
+	SetTimes()																					// AUTRHOR PAGES
+	{
+		$("#popupDiv").remove();																	// Kill old one, if any
+		let str=`<div id='popupDiv' class='hm-popup' style="width:500px;height:150px">
+		<img id="auth-close" style="float:right" src="img/closedot.gif">
+		<b>AUTHOR PAGE</b><br><br>
+		START: <input class="hm-is" id="auth-start" style="width:40px">
+		TIME: <input class="hm-is" id="auth-time" style="width:80px">
+		END: <input class="hm-is" id="auth-end" style="width:40px"></p>
+		<p>NAME : <input class="hm-is" id="auth-name" style="width:200px"></p>
+		<div id="auth-save" class="hm-bs">SET</div></div>`; 												
+		$("body").append(str);																		// Add popup to div or body
+		$("#popupDiv").draggable();																	// Make it draggable
+		
+		function setData() {																		// SET FIELDS WITH CURRENT DATA
+			$("#auth-start").val(curPage.start);
+			$("#auth-end").val(curPage.end);
+			$("#auth-name").val(curPage.name);
+			}
+		setData();																					// Cur current date
+		$("#auth-start").on("dblclick", ()=>{ $("#auth-start").val(vid.curTime.toFixed(2)); });		// Set start to cur time
+		$("#auth-end").on("dblclick",   ()=>{ $("#auth-end").val(vid.curTime.toFixed(2));   });		// End
+		$("#auth-close").click(function() { $("#popupDiv").remove(); });							// Remove on click of close but
+		$("#auth-save").click(function() {
+			curPage.start=$("#auth-start").val();
+			curPage.end=$("#auth-end").val();
+			curPage.name=$("#auth-name").val();
+			Sound("ding");
+			trace(JSON.stringify(curLesson.topics[app.topic].pages))	
+		
+		});
+		$("#popupDiv").fadeIn(500);																	// Animate in and out		
 	}
 
 
