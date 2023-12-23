@@ -8,10 +8,10 @@ class App  {
 	{
 		app=this;
 		this.userID="";																				// User ID
-		this.module=0;																				// Module id
-		this.lesson=0;																				// Current lesson
-		this.topic=0;																				// Current topic
-		this.page=0;																				// Current page
+		this.module='0';																			// Module id
+		this.lesson='0';																			// Current lesson
+		this.topic='0';																				// Current topic
+		this.page='0';																				// Current page
 		this.id="";																					// Position id
 		this.course={name: "HelpMath", version:.9, modules:[]};										// Course data
 		this.LoadConfig("project.json");															// Load config file and set up project
@@ -95,7 +95,7 @@ class App  {
 		$("[id^=hm-lesson-]").on("click", function(e) {												// ON LESSON SELECT
 			Sound("click");																			// Click sound
 			app.lesson=e.target.id.substring(10);													// Get lesson index
-			app.topic=app.page=0;																	// Reset topic/page
+			app.topic=app.page="0";																	// Reset topic/page
 			app.ShowLesson();																		// Show lesson
 			});
 	}
@@ -104,7 +104,9 @@ class App  {
 	{
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		curPage=curLesson.topics[app.topic].pages[app.page];										// Point at page
-			let str=`<img src="img/logo2.png" style="float:left;height:5vw;margin:16px 0 0 16px">
+		$("#auth-start").val(curPage.start); $("#auth-end").val(curPage.end);$("#auth-name").val(curPage.name);	 //  For authoring
+
+		let str=`<img src="img/logo2.png" style="float:left;height:5vw;margin:16px 0 0 16px">
 			<img id="hm-close" src="img/closebut.png" title="Close / Cerrar"style="width:20px;float:right;margin:16px 16px 0 0;cursor:pointer">
 			<div style="text-align:center;width:calc(16% - 16px);position:absolute;left:32px;top:20vw">
 				<div id="hm-mapbut" class="hm-topicbut">${trans("Map")}</div>
@@ -235,8 +237,8 @@ class App  {
 		function pages() {																			// SHOW PAGES
 			let i, str="<div>";
 			let o=curLesson.topics[app.topic];														// Point at topic
-				for (i=0;i<o.pages.length;++i)														// For each page
-					str+=`<div class="hm-termitem" id="hm-topicpage-${i}">${trans((o.pages[i].name))}</div>`;// Add item
+			for (i=1;i<o.pages.length;++i)															// For each page
+				str+=`<div class="hm-termitem" id="hm-topicpage-${i}">${trans((o.pages[i].name))}</div>`;// Add item
 			str+="</div>";	
 			$("#hm-dataRight").html(str.replace(/\t|\n|\r/g,""));									// Add markup
 
@@ -251,29 +253,34 @@ class App  {
 
 	ExtractData()																				// GET COURSE DATA
 	{
-		this.course.modules[0]={ name:"Math Foundations 1", id: "01000000", title:"Counting on Numbers",
+		this.course.modules[0]={ name:"Math Foundations 1", title:"Counting on Numbers",
 			lessons:[{ name: "Place Value",	topics:[
 					{ name: "Real World", pages:[
-						{ name: "1", start:4,    end:11.61, 	status:0 },
-						{ name: "2", start:18.6, end:143.8, 	status:0 },
-						{ name: "3", start:150,  end:242.5, 	status:0 },
-						{ name: "4", start:245,  end:300, 	status:0, triggers:[
-							{ time:299.5-245, id:"C0-L0-T0-A1" } 	]},
-						{ name: "", start:310, 	end:338,	status:0, links:[ 
-							{ name:"place value", start:21, end:29, x:.65, y:.10 },
-							{ name:"compare", start:21, end:29, x:.22, y:.17 },
-							{ name:"order", start:21, end:29, x:.32, y:.17 },
-							{ name:"round",	start:21, end:29, x:.47, y:.17 },
-							{ name:"whole numbers", start:21, end:29, x:.61,y:.17 } ]},
+						{name:"Intro",start:4,end:11.61,status:0,links:[],id:"00-00-00-04"},
+						{name:"2",start:18.6,end:143.8,status:0,links:[],id:"00-00-00-04"},
+						{name:"3",start:150,end:242.5,status:0,links:[],id:"00-00-00-04"},
+						{name:"4",start:245,end:300,status:0,triggers:[{time:54.5,id:"C0-L0-T0-A1"}],links:[],id:"00-00-00-04"},
+						{name:"5",start:310,end:338,status:0,links:[
+							{name:"place value",start:21,end:29,x:0.65,y:0.1},
+							{name:"compare",start:21,end:29,x:0.22,y:0.17},
+							{name:"order",start:21,end:29,x:0.32,y:0.17},
+							{name:"round",start:21,end:29,x:0.47,y:0.17},
+							{name:"whole numbers",start:21,end:29,x:0.61,y:0.17}],triggers:[],id:"00-00-00-04"}	
 						]},	// TOPIC
 					{ name: "Important Words", pages:[						
-						{ name: "", start:4,  end:12.6, status:0 },
-						{ name: "Place-value chart/models", start:13.6,  end:72.1, status:0 },
-						{ name: "Place-value", start:75.6,  end:1000, status:0 },
-						{ name: "Ones / thousands group", start:13.6,  end:1000, status:0 },
-						{ name: "Word form", start:75.6,  end:1000, status:0 },
-						{ name: "Standard/expanded form", start:75.6,  end:1000, status:0 },
-						{ name: "Rounding", start:75.6,  end:1000, status:0 },
+						{name:"Intro",start:4,end:12.6,status:0,links:[],id:"00-00-01-00"},
+						{name:"Place-value chart/models",start:13.6,end:72.1,status:0,links:[],id:"00-00-01-01"},
+						{name:"Place-value ones",start:75.6,end:1000,status:0,triggers:[{time:5.4,id:"C0-L0-T1-A1"}],links:[],id:"00-00-01-02"},
+						{name:"Place-value tens",start:86.35,end:90.64,status:0,triggers:[{time:4.24,id:"C0-L0-T1-A2"}],links:[],id:"00-00-01-03"},
+						{name:"Place-value hundred",start:94.29,end:98.75,status:0,triggers:[{time:4,id:"C0-L0-T1-A2"}],links:[],id:"00-00-01-04"},
+						{name:"Ones / tens / hundreds places ",start:103.29,end:156.67,status:0,triggers:[],links:[],id:"00-00-01-05"},
+						{name:"Ones / tens / hundreds places ",start:160,end:182,status:0,links:[],id:"00-00-01-06",triggers:[]},
+						{name:"Ones / thousands groups",start:185.5,end:223,status:0,links:[],id:"00-00-01-07",triggers:[]},
+						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08"},
+						{name:"Word form exercise",start:263.56,end:286.96,status:0,links:[],id:"00-00-01-09"},
+						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10"},
+						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11"},
+						{name:"Rounding",start:382.64,end:404.82,status:0,links:[],triggers:[],id:"00-00-01-12"}
 						]},	// TOPIC
 					{ name: "Learn It!", pages:[						
 						{ name: "Page 0", start:4,  end:12.6, status:0 },
@@ -293,7 +300,13 @@ class App  {
 			
 	}	
 
+
+
+
 	/*
+
+
+
   	"Introduction" 
     "Reading and Writing Whole Numbers in Word and Standard Forms" 
     "Using Models to Represent Numbers"

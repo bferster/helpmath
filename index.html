@@ -126,13 +126,9 @@
 			})
 
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
-			if (e.which == 109)	vid.RunPlayer("seek",vid.curTime-.1);			
-			if (e.which == 107)	vid.RunPlayer("seek",vid.curTime+.1);			
-			trace(e.which)
-			if ((e.which == 81) && e.ctrlKey)	{													// Test key (CTL-Q)
-				vid.SetTimes();
-			
-				}
+			if (e.which == 109)					vid.RunPlayer("seek",vid.curTime-.1);			
+			if (e.which == 107)					vid.RunPlayer("seek",vid.curTime+.1);			
+			if ((e.which == 81) && e.ctrlKey)	vid.SetTimes();										// Test key (CTL-Q)
 			});
 
 		if (isLocal) { $("#hm-main").fadeIn();app.ShowLesson(); 	return;	}						// Debug mode
@@ -210,6 +206,3 @@
 </script>
 </body>
 </html>
-
-
-

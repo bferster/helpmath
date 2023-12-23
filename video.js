@@ -119,7 +119,8 @@ class Video  {
 				let y=e.offsetY/$("#hm-overlay").height();											// Y
 				trace(x.toFixed(2),y.toFixed(2));													// Log
 				let o=curPage.links;																// Point at links
-				for (i=0;i<curPage.links.length;++i) {												// For each one
+				if (!o)	return;																		// No links
+				for (i=0;i<o.length;++i) {															// For each one
 					if ((o[i].start > vid.time) || (vid.time > o[i].end)) 	continue;				// Not in time range
 					if (Math.abs(y-o[i].y) > .03) 							continue;				// Not in y range
 					if (Math.abs(x-o[i].x) > .007*o[i].name.length) 		continue;				// Not in x range
@@ -170,36 +171,59 @@ class Video  {
 	SetTimes()																					// AUTRHOR PAGES
 	{
 		$("#popupDiv").remove();																	// Kill old one, if any
-		let str=`<div id='popupDiv' class='hm-popup' style="width:500px;height:150px">
+		let str=`<div id='popupDiv' class='hm-popup' style="width:500px;top:calc(100vh - 250px);">
 		<img id="auth-close" style="float:right" src="img/closedot.gif">
-		<b>AUTHOR PAGE</b><br><br>
+		<b>AUTHOR PAGES</b><br><br>
 		START: <input class="hm-is" id="auth-start" style="width:40px">
 		TIME: <input class="hm-is" id="auth-time" style="width:80px">
 		END: <input class="hm-is" id="auth-end" style="width:40px"></p>
 		<p>NAME : <input class="hm-is" id="auth-name" style="width:200px"></p>
-		<div id="auth-save" class="hm-bs">SET</div></div>`; 												
-		$("body").append(str);																		// Add popup to div or body
+		<div id="auth-set" class="hm-bs" style="float:left">SET PAGE</div> 												
+		<div id="auth-save" class="hm-bs"style="float:right">SAVE ALL</div>
+		Type "NEW" in name<br>to add a new page</div>`; 												
+		$("body").append(str);																		// Add tool to body
 		$("#popupDiv").draggable();																	// Make it draggable
-		
-		function setData() {																		// SET FIELDS WITH CURRENT DATA
-			$("#auth-start").val(curPage.start);
-			$("#auth-end").val(curPage.end);
-			$("#auth-name").val(curPage.name);
-			}
-		setData();																					// Cur current date
+		$("#auth-start").val(curPage.start);														// Get initial start
+		$("#auth-end").val(curPage.end);															// End
+		$("#auth-name").val(curPage.name);															// Name
 		$("#auth-start").on("dblclick", ()=>{ $("#auth-start").val(vid.curTime.toFixed(2)); });		// Set start to cur time
 		$("#auth-end").on("dblclick",   ()=>{ $("#auth-end").val(vid.curTime.toFixed(2));   });		// End
 		$("#auth-close").click(function() { $("#popupDiv").remove(); });							// Remove on click of close but
-		$("#auth-save").click(function() {
-			curPage.start=$("#auth-start").val();
-			curPage.end=$("#auth-end").val();
-			curPage.name=$("#auth-name").val();
-			Sound("ding");
-			trace(JSON.stringify(curLesson.topics[app.topic].pages))	
-		
-		});
 		$("#popupDiv").fadeIn(500);																	// Animate in and out		
+		
+		$("#auth-set").click(function() {															// When saving
+			if ($("#auth-name").val() == "NEW") {													// If adding a new page
+				let o={ name:"New page",start:vid.curTime,end:vid.curTime+100,status:0,links:[] };	// Base
+				curLesson.topics[app.topic].pages.splice(app.page-0+1,0,o);							// Add in place
+				app.ShowLesson();																	// Reset
+				Sound("yea");																		// Ding
+				return;
+				}
+			curPage.start=$("#auth-start").val()-0;													// Start
+			curPage.end=$("#auth-end").val()-0;														// End
+			curPage.name=$("#auth-name").val();														// Name
+			app.ShowLesson();																		// Reset
+			Sound("ding");																			// Ding
+			});
+		$("#auth-save").click(function() {															// When saving
+			let i,o;
+			for (i=0;i<curLesson.topics[app.topic].pages.length;++i) {								// For each page
+				o=curLesson.topics[app.topic].pages[i];												// Point at page
+				if (!o.links)	o.links=[];															// Add links shel, if not there
+				if (!o.triggers) 	curPage.triggers=[];											// Triggers 
+				o.status=0;																			// ID
+				o.id=app.module.padStart(2,"0")+"-"+app.lesson.padStart(2,"0")+"-"+app.topic.padStart(2,"0")+"-"+(""+i).padStart(2,"0");	// Set id
+				}
+			let s=JSON.stringify(curLesson.topics[app.topic].pages);								// Get page data
+			s=s.replace(/},/g,"},\n");	 															// Add LFs
+			s=s.replace(/{"/g,"{");  s=s.replace(/,"/g,",");   s=s.replace(/":/g,":");				// Remove quotes
+			s=s.substring(1,s.length-1);															// Remove array
+			s=s.replace(/links:\[{/g,"links:[\n\t{");											// Indent links
+			trace(s)
+			});
 	}
+	
 
-
+	
 } // App class closure
+
