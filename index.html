@@ -126,9 +126,10 @@
 			})
 
 		$(window).on("keydown",function(e) {														// HANDLE KEYPRESS
-			if (e.which == 109)					vid.RunPlayer("seek",vid.curTime-.1);			
-			if (e.which == 107)					vid.RunPlayer("seek",vid.curTime+.1);			
-			if ((e.which == 81) && e.ctrlKey)	vid.SetTimes();										// Test key (CTL-Q)
+			if (e.which == 32)	$("#hm-play").trigger("click");										// Play/pause
+			if (e.which == 37)	vid.RunPlayer("pause"),vid.RunPlayer("seek",vid.curTime-.1);		// Back		
+			if (e.which == 39)	vid.RunPlayer("pause"),vid.RunPlayer("seek",vid.curTime+.1);		// Forward	
+			if ((e.which == 112) && e.ctrlKey && e.shiftKey) vid.SetTimes();						// Author pages key (CTL-SFT-F1)
 			});
 
 		if (isLocal) { $("#hm-main").fadeIn();app.ShowLesson(); 	return;	}						// Debug mode

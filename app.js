@@ -102,7 +102,9 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
+		if (!app.course.modules[app.module].lessons[app.lesson])	return;							// Quit if no lesson
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
+		if (!curLesson.topics[app.topic])							return;							// Quit if no topic
 		curPage=curLesson.topics[app.topic].pages[app.page];										// Point at page
 		$("#auth-start").val(curPage.start); $("#auth-end").val(curPage.end);$("#auth-name").val(curPage.name);	 //  For authoring
 
@@ -166,7 +168,10 @@ class App  {
 		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
-		}
+	
+//vid.RunPlayer("pause"); act.Run("T00-00-01-06-00")	
+	
+	}
 	
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR
 	{
@@ -190,14 +195,31 @@ class App  {
 			});
 		$("#hm-pageBack").on("click", function(e) {													// ON BACK
 			Sound("click");																			// Click sound
-			app.page=Math.max(0,app.page-1)															// Dec
-			app.ShowLesson()
+			app.PreviousPage();																		// Go to prevous page
 			});
 		$("#hm-pageNext").on("click", function(e) {													// ON FORWARD
 			Sound("click");																			// Click sound
-			app.page=Math.min(app.page+1,pages.length-1)											// Inc
-			app.ShowLesson()
+			app.NextPage();																			// Go to next page
 			});
+	}
+
+	NextPage()																					// GO ON TO NEXT PAGE IN LESSON
+	{
+		if (app.page < app.course.modules[app.module].lessons[app.lesson].topics[app.topic].pages.length-1)	// If still in this lesson
+			app.page++;																				// Advance to next page																		
+		else if (app.topic < app.course.modules[app.module].lessons[app.lesson].topics.length-1)	// If not last topic
+			app.page=0,app.topic++;																	// Advance to next topic																	
+		else if (app.lesson < app.course.modules[app.module].lessons.length-1)						// If not last lesson
+			app.page=0,app.topic=0,app.lesson++;													// Advance to next lesson																	
+		else if (app.module < app.course.modules.length-1)											// If not last module
+			app.page=0,app.topic=0,app.lesson=0,app.module++;										// Advance to next module																	
+		app.ShowLesson();																			// Show page
+	}
+
+	PreviousPage()																				// GO ON TO PREVIOUS PAGE IN LESSON
+	{
+		app.page=Math.max(0,app.page-1)																// Dec
+		app.ShowLesson();																			// Show page
 	}
 
 	ShowTopicMenu()																				// SHOW TOPIC MENU
@@ -259,33 +281,36 @@ class App  {
 						{name:"Intro",start:4,end:11.61,status:0,links:[],id:"00-00-00-04"},
 						{name:"2",start:18.6,end:143.8,status:0,links:[],id:"00-00-00-04"},
 						{name:"3",start:150,end:242.5,status:0,links:[],id:"00-00-00-04"},
-						{name:"4",start:245,end:300,status:0,triggers:[{time:54.5,id:"C0-L0-T0-A1"}],links:[],id:"00-00-00-04"},
+						{name:"4",start:245,end:300,status:0,triggers:[{time:54.5,id:"T00-00-00-03-00"}],links:[],id:"00-00-00-04"},
 						{name:"5",start:310,end:338,status:0,links:[
 							{name:"place value",start:21,end:29,x:0.65,y:0.1},
 							{name:"compare",start:21,end:29,x:0.22,y:0.17},
 							{name:"order",start:21,end:29,x:0.32,y:0.17},
 							{name:"round",start:21,end:29,x:0.47,y:0.17},
-							{name:"whole numbers",start:21,end:29,x:0.61,y:0.17}],triggers:[],id:"00-00-00-04"}	
+							{name:"whole numbers",start:21,end:29,x:0.61,y:0.17}],triggers:[],id:"T00-00-00-00-00"}	
 						]},	// TOPIC
 					{ name: "Important Words", pages:[						
-						{name:"Intro",start:4,end:12.6,status:0,links:[],id:"00-00-01-00"},
-						{name:"Place-value chart/models",start:13.6,end:72.1,status:0,links:[],id:"00-00-01-01"},
-						{name:"Place-value ones",start:75.6,end:1000,status:0,triggers:[{time:5.4,id:"C0-L0-T1-A1"}],links:[],id:"00-00-01-02"},
-						{name:"Place-value tens",start:86.35,end:90.64,status:0,triggers:[{time:4.24,id:"C0-L0-T1-A2"}],links:[],id:"00-00-01-03"},
-						{name:"Place-value hundred",start:94.29,end:98.75,status:0,triggers:[{time:4,id:"C0-L0-T1-A2"}],links:[],id:"00-00-01-04"},
-						{name:"Ones / tens / hundreds places ",start:103.29,end:156.67,status:0,triggers:[],links:[],id:"00-00-01-05"},
+						{name:"Intro",start:4,end:12.6,status:0,links:[],id:"00-00-01-00",triggers:[]},
+						{name:"Place-value chart/models",start:13.6,end:72.1,status:0,links:[],id:"00-00-01-01",triggers:[]},
+						{name:"Place-value ones",start:75.6,end:79.4,status:0,triggers:[{time:3.6,id:"T00-00-01-02-00"}],links:[],id:"00-00-01-02"},
+						{name:"Place-value tens",start:86.35,end:90.64,status:0,triggers:[{time:4,id:"T00-00-01-03-00"}],links:[],id:"00-00-01-03"},
+						{name:"Place-value hundred",start:94.29,end:98.41,status:0,triggers:[{time:4,id:"T00-00-01-04-00"}],links:[],id:"00-00-01-04"},
+						{name:"Ones / tens / hundreds places ",start:103.29,end:156.67,status:0,triggers:[{time:"53",id:"T00-00-01-05-00"}],links:[],id:"00-00-01-05"},
 						{name:"Ones / tens / hundreds places ",start:160,end:182,status:0,links:[],id:"00-00-01-06",triggers:[]},
 						{name:"Ones / thousands groups",start:185.5,end:223,status:0,links:[],id:"00-00-01-07",triggers:[]},
-						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08"},
-						{name:"Word form exercise",start:263.56,end:286.96,status:0,links:[],id:"00-00-01-09"},
-						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10"},
-						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11"},
+						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08",triggers:[]},
+						{name:"Word form exercise",start:263.56,end:286.96,status:0,links:[],id:"00-00-01-09",triggers:[]},
+						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10",triggers:[]},
+						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[]},
 						{name:"Rounding",start:382.64,end:404.82,status:0,links:[],triggers:[],id:"00-00-01-12"}
 						]},	// TOPIC
 					{ name: "Learn It!", pages:[						
 						{ name: "Page 0", start:4,  end:12.6, status:0 },
 						]},	// TOPIC
-					{ name: "Play It!", pages:[						
+					{ name: "Try It!", pages:[						
+						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						]},	// TOPIC
+						{ name: "Play It!", pages:[						
 						{ name: "Page 0", start:4,  end:12.6, status:0 },
 						]},	// TOPIC
 					{ name: "Practice Test", pages:[						

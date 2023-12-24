@@ -34,7 +34,7 @@ class Video  {
 		vid.time=vid.curTime-vid.start;																// Time within span
 		vid.pct=vid.time/vid.dur;																	// Calc pct of clip done
 		$("#hm-timeSlider").slider("value",vid.pct*100);											// Set slider
-		$("#auth-time").val(vid.curTime.toFixed(2));												// Set authoring time
+		$("#auth-time").val((vid.curTime-0).toFixed(2)+" : "+(vid.time-0).toFixed(2));				// Set authoring time
 		let n=vid.triggers.length;																	// Number of triggers
 		for (i=0;i<n;++i) {																			// For each
 			o=vid.triggers[i];																		// Point at trigger
@@ -65,7 +65,7 @@ class Video  {
 		let i,str;
 		if (what == "init") {																		// INIT
 			$("#hm-play").prop("src","img/pausebut.png");											// Pause icon button, since we do autoplay
-			this.src=`assets/C${app.module}/C${app.module}-L${app.lesson}-T${app.topic}.mp4`;		// Make source
+			this.src=`assets/C${(""+app.module).padStart(2,"0")}/C${app.module}-L${app.lesson}-T${app.topic}.mp4`;		// Make source
 			this.curTime=this.start=curPage.start;													// Init to beginning
 			this.end=curPage.end;																	// Get end
 			this.dur=this.end-this.start;															// Set duration
@@ -125,7 +125,6 @@ class Video  {
 					if (Math.abs(y-o[i].y) > .03) 							continue;				// Not in y range
 					if (Math.abs(x-o[i].x) > .007*o[i].name.length) 		continue;				// Not in x range
 					vid.RunPlayer("pause");															// Pause video
-					$("#hm-play").prop("src","img/playbut.png");									// Play icon button
 					key.Show(o[i].name);															// Show keyterm
 					}
 				});
@@ -146,19 +145,23 @@ class Video  {
 			this.status="play";																		// Set status
 			if (this.player.readyState)	this.RunPlayer("seek",this.curTime);						// If ready, cue it up
 			this.player.volume=this.volume/100;														// Set volume
+			$("#hm-play").prop("src","img/pausebut.png");											// Pause icon button
 			this.player.play(); 																	// Play
 			}
 		else if (what == "seek")  {																	// SEEK
 			if ((this.status == "empty") && isMobile)	return;										// Mobiles need user to initiate touch before controlled play
 			this.curTime=param;																		// Set time
 			if (!this.player) return;																// If no player yet, quit
+//			this.player.pause(); 																	// Pause
+//			$("#hm-play").prop("src","img/playbut.png");											// Play icon button
 			if (this.player.readyState)	this.player.currentTime=this.curTime;						// If ready, cue it up
-			$("#auth-time").val((vid.curTime).toFixed(2));											// Set authoring time
+			$("#auth-time").val((vid.curTime-0).toFixed(2)+" : "+(vid.time-0).toFixed(2));			// Set authoring time
 			trace("Seek = "+(param-vid.start).toFixed(2),param.toFixed(2));							// Show clip and total time
 			}
 		else if (what == "pause") {																	// PAUSE
 			this.status="pause";																	// Set mode
 			if (!this.player)	return;																// If no player yet, quit
+			$("#hm-play").prop("src","img/playbut.png");											// Play icon button
 			this.player.pause(); 																	// Pause
 			}
 		else if (what == "volume") {																// Volume
@@ -180,7 +183,8 @@ class Video  {
 		<p>NAME : <input class="hm-is" id="auth-name" style="width:200px"></p>
 		<div id="auth-set" class="hm-bs" style="float:left">SET PAGE</div> 												
 		<div id="auth-save" class="hm-bs"style="float:right">SAVE ALL</div>
-		Type "NEW" in name<br>to add a new page</div>`; 												
+		<div id="auth-trigger" class="hm-bs"style="">ADD TRIGGER</div><br>
+		<p>Type "NEW" in name to add a new page</p></div>`; 												
 		$("body").append(str);																		// Add tool to body
 		$("#popupDiv").draggable();																	// Make it draggable
 		$("#auth-start").val(curPage.start);														// Get initial start
@@ -190,7 +194,7 @@ class Video  {
 		$("#auth-end").on("dblclick",   ()=>{ $("#auth-end").val(vid.curTime.toFixed(2));   });		// End
 		$("#auth-close").click(function() { $("#popupDiv").remove(); });							// Remove on click of close but
 		$("#popupDiv").fadeIn(500);																	// Animate in and out		
-		
+
 		$("#auth-set").click(function() {															// When saving
 			if ($("#auth-name").val() == "NEW") {													// If adding a new page
 				let o={ name:"New page",start:vid.curTime,end:vid.curTime+100,status:0,links:[] };	// Base
@@ -205,25 +209,34 @@ class Video  {
 			app.ShowLesson();																		// Reset
 			Sound("ding");																			// Ding
 			});
+
 		$("#auth-save").click(function() {															// When saving
 			let i,o;
 			for (i=0;i<curLesson.topics[app.topic].pages.length;++i) {								// For each page
 				o=curLesson.topics[app.topic].pages[i];												// Point at page
-				if (!o.links)	o.links=[];															// Add links shel, if not there
-				if (!o.triggers) 	curPage.triggers=[];											// Triggers 
-				o.status=0;																			// ID
-				o.id=app.module.padStart(2,"0")+"-"+app.lesson.padStart(2,"0")+"-"+app.topic.padStart(2,"0")+"-"+(""+i).padStart(2,"0");	// Set id
+				if (!o.links)		o.links=[];														// Add links shell, if not there
+				if (!o.triggers) 	o.triggers=[];													// Triggers 
+				o.status=0;																			// Status
+				o.id=makeId(i);																		// Set id
 				}
 			let s=JSON.stringify(curLesson.topics[app.topic].pages);								// Get page data
 			s=s.replace(/},/g,"},\n");	 															// Add LFs
 			s=s.replace(/{"/g,"{");  s=s.replace(/,"/g,",");   s=s.replace(/":/g,":");				// Remove quotes
 			s=s.substring(1,s.length-1);															// Remove array
-			s=s.replace(/links:\[{/g,"links:[\n\t{");											// Indent links
+			s=s.replace(/links:\[{/g,"links:[\n\t{");												// Indent links
 			trace(s)
 			});
-	}
-	
 
+		$("#auth-trigger").click(function() {														// When saving
+			Sound("ding");																			// Ding
+			if (!curPage.triggers)	curPage.triggers=[];											// Add array if not there
+			curPage.triggers.push({time:vid.time.toFixed(2),id:"T"+makeId(app.page)+"-"+(""+curPage.triggers.length).padStart(2,"0")});	// Add trigger
+			});
+
+		function makeId(n) {																		// MAKE ID
+			return (""+app.module).padStart(2,"0")+"-"+(""+app.lesson).padStart(2,"0")+"-"+(""+app.topic).padStart(2,"0")+"-"+(""+n).padStart(2,"0");	
+			}
+		}
 	
 } // App class closure
 

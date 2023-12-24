@@ -8,7 +8,7 @@ class Interact  {
 	{
 		this.acts=[];																				// Holds actions
 		this.path="";																				// Assets path
-		let o={ id:"C0-L0-T0-A1", type:"dragsort", items:[] };
+		let o={ id:"T00-00-00-03-00", type:"dragsort", items:[] };
 		o.back="back.png";		
 		o.done="next";	o.doneAnimation=true;
 		o.items.push( { startX:5.8,		startY:28.2, 	endX:44.5,	 endY:58.3, 	width:10.5, status:false });		
@@ -19,17 +19,25 @@ class Interact  {
 		o.items.push( { startX:70.7,	startY:28.2, 	endX:18.6,	 endY:58.2, 	width:10.5, status:false });		
 		o.items.push( { startX:83.2,	startY:28.2, 	endX:31.7,	 endY:58.2, 	width:10.5, status:false });		
 		this.acts[o.id]=o;
-		this.acts["C0-L0-T1-A1"]={ id:"C0-L0-T1-A1", type:"click", done:"play", items:[ { endX:.58, endY:.83, width:.025, height:.1}] };
-		this.acts["C0-L0-T1-A2"]={ id:"C0-L0-T1-A2", type:"click", done:"play", items:[ { endX:.52, endY:.83, width:.025, height:.1}] };
-		this.acts["C0-L0-T1-A3"]={ id:"C0-L0-T1-A3", type:"click", done:"play", items:[ { endX:.38, endY:.83, width:.025, height:.1}] };
-		}
+		this.acts["T00-00-01-02-00"]={ id:"T00-00-01-02-00", type:"click", done:"next", items:[ { endX:.58, endY:.83, width:.025, height:.1}] };
+		this.acts["T00-00-01-03-00"]={ id:"T00-00-01-03-00", type:"click", done:"next", items:[ { endX:.52, endY:.83, width:.025, height:.1}] };
+		this.acts["T00-00-01-04-00"]={ id:"T00-00-01-04-00", type:"click", done:"next", items:[ { endX:.38, endY:.83, width:.025, height:.1}] };
+		o={ id:"T00-00-01-05-00", type:"placevalue", items:[] };
+		o.back="back.png";		
+		this.acts[o.id]=o;
+	}
+
+	
 
 	Run(id)
 	{
+		trace(id)
 		let action=this.acts[id];																	// Point at action
-		this.path="assets/"+action.id.substring(0,2)+"/"+action.id;									// Asset path + name
+		this.path="assets/C"+action.id.substring(1,3)+"/"+action.id;								// Asset path + name
 		if (action.type == "dragsort")			this.DragSort(action);								// Dragsort interaction
-		else if (action.type == "click")		this.Click(action);									// Click interaction
+		else if (action.type == "click")		this.Click(action);									// Click 
+		else if (action.type == "placevalue")	this.Placevalue(action);							// Placevalue 
+		else if (action.type == "rollover")		this.Rollover(action);								// Rollover
 	}
 
 	Click(action)																				// CLICK INTERACTION
@@ -44,6 +52,54 @@ class Interact  {
 				this.HandleDone(action);															// Handle done
 				}
 			else this.Failure();																	// Oh oh
+			});
+	}
+
+	Rollover(action)																				// PLACEVALUE INTERACTION
+	{
+		let num=Math.floor(Math.random()*9999+1000);												// Get random number from 1000-9999							
+		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
+		$("#hm-overlay").html(str);																	// Add items to markup														
+	
+		$("#hm-overlay").on("click", (e)=>{
+			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
+			let y=e.offsetY/$("#hm-overlay").height();												// Y
+			if ((Math.abs(x-.9) < .1) && (Math.abs(y-.73) < .05)) {									// If in range
+				Sound("ding");																		// OK			
+				$("#hm-overlay").off("click");														// Remove click handler				
+				this.Placevalue(action);															// Do it again
+				}
+			});
+	}
+
+	Placevalue(action)																				// PLACEVALUE INTERACTION
+	{
+		let i,str="";
+		let num=Math.floor(Math.random()*499+100);													// Get random number from 100-4S99							
+		let ones=num%10;																			// Isolate ones
+		let tens=Math.floor(num%100/10);															// Tens
+		let hundreds=Math.floor(num/100);															// Hundreds
+		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
+		str+=`<div style="position:absolute;width:24%;height:52%;top:12vw;left:1.4vw;text-align:center">`;
+		for (i=0;i<hundreds;++i)str+=`<img src="img/block.png" style="width:${57-Math.min(30,hundreds*5)}%;margin:3% 3%">`; 
+		str+=`</div><div style="position:absolute;width:24%;height:52%;top:12vw;left:16vw;text-align:center">`;
+		for (i=0;i<tens;++i) str+=`<img src="img/bar.png" style="width:7%;margin:2% 4%">`; 
+		str+=`</div><div style="position:absolute;width:23%;height:52%;top:12vw;left:31vw;text-align:center">`
+		for (i=0;i<ones;++i)str+=`<img src="img/unitblock.png" style="width:12%;margin:3% 3%">`;
+		str+=`</div><div style="font-size:1.6vw;position:absolute;left:83%;top:47.5%"><b>${num}</b></div>
+		<div style="font-size:1.6vw;position:absolute;left:14%;top:90%"><b>${hundreds}</b></div>
+		<div style="font-size:1.6vw;position:absolute;left:38%;top:90%"><b>${tens}</b></div>
+		<div style="font-size:1.6vw;position:absolute;left:63%;top:90%"><b>${ones}</b></div>`;
+		$("#hm-overlay").html(str);																	// Add items to markup														
+	
+		$("#hm-overlay").on("click", (e)=>{
+			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
+			let y=e.offsetY/$("#hm-overlay").height();												// Y
+			if ((Math.abs(x-.9) < .1) && (Math.abs(y-.73) < .05)) {									// If in range
+				Sound("ding");																		// OK			
+				$("#hm-overlay").off("click");														// Remove click handler				
+				this.Placevalue(action);															// Do it again
+				}
 			});
 	}
 
