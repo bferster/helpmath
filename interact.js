@@ -27,11 +27,8 @@ class Interact  {
 		this.acts[o.id]=o;
 	}
 
-	
-
 	Run(id)
 	{
-		trace(id)
 		let action=this.acts[id];																	// Point at action
 		this.path="assets/C"+action.id.substring(1,3)+"/"+action.id;								// Asset path + name
 		if (action.type == "dragsort")			this.DragSort(action);								// Dragsort interaction
@@ -40,35 +37,32 @@ class Interact  {
 		else if (action.type == "rollover")		this.Rollover(action);								// Rollover
 	}
 
-	Click(action)																				// CLICK INTERACTION
+	Click(action,num=0)																			// CLICK INTERACTION
 	{
-		$("#hm-overlay").on("click", (e)=>{
-			let o=action.items[0];																	// Point at item
-			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
-			let y=e.offsetY/$("#hm-overlay").height();												// Y
-			if ((Math.abs(x-o.endX) < o.width) && (Math.abs(y-o.endY) < o.height)) {				// If in range
-				Sound("ding");																		// OK			
-				$("#hm-overlay").off("click");														// Remove click handler				
+		let o=action.items[num];																	// Point at item
+		this.OnClick(o.endX,o.endY,o.width,o.height,()=>{											// On click subroutine
+				Sound("ding");																		// Ding			
 				this.HandleDone(action);															// Handle done
-				}
-			else this.Failure();																	// Oh oh
-			});
-	}
+				},()=>{	this.Failure(); }															// Handle failure
+			);
+		}
 
-	Rollover(action)																				// PLACEVALUE INTERACTION
+	Rollover(action)																			// PLACEVALUE INTERACTION
 	{
 		let num=Math.floor(Math.random()*9999+1000);												// Get random number from 1000-9999							
+		let ones=num%10;																			// Isolate ones
+		let tens=Math.floor(num%100/10);															// Tens
+		let hundreds=Math.floor(num/100);															// Hundreds
+		let thousands=Math.floor(num/1000);															// Thousnds
+
+
+
 		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
 		$("#hm-overlay").html(str);																	// Add items to markup														
-	
-		$("#hm-overlay").on("click", (e)=>{
-			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
-			let y=e.offsetY/$("#hm-overlay").height();												// Y
-			if ((Math.abs(x-.9) < .1) && (Math.abs(y-.73) < .05)) {									// If in range
-				Sound("ding");																		// OK			
-				$("#hm-overlay").off("click");														// Remove click handler				
-				this.Placevalue(action);															// Do it again
-				}
+		this.OnClick(79,.75,.1,.05,()=>{															// Onclick routine
+			$("#hm-overlay").off("click");															// Remove click handler becauswe of recursion		
+			Sound("ding");																			// Ding			
+			this.Placevalue(action);																// Do it again
 			});
 	}
 
@@ -92,14 +86,10 @@ class Interact  {
 		<div style="font-size:1.6vw;position:absolute;left:63%;top:90%"><b>${ones}</b></div>`;
 		$("#hm-overlay").html(str);																	// Add items to markup														
 	
-		$("#hm-overlay").on("click", (e)=>{
-			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
-			let y=e.offsetY/$("#hm-overlay").height();												// Y
-			if ((Math.abs(x-.9) < .1) && (Math.abs(y-.73) < .05)) {									// If in range
-				Sound("ding");																		// OK			
-				$("#hm-overlay").off("click");														// Remove click handler				
-				this.Placevalue(action);															// Do it again
-				}
+		this.OnClick(.9,.73,.1,.05,()=>{															// Onclick routine
+			$("#hm-overlay").off("click");															// Remove click handler becauswe of recursion		
+			Sound("ding");																			// Ding			
+			this.Placevalue(action);																// Do it again
 			});
 	}
 
@@ -136,12 +126,29 @@ class Interact  {
 			}
 	}
 
+	OnRoll(x, y, wid, hgt, msg)																	// REACT TO A MOUSE OVER
+	{
+	}
+
+
+
+	OnClick(x, y, wid, hgt, success, failure=()=>{})											// REACT TO A MOUSE CLICK
+	{
+		$("#hm-overlay").on("click", (e)=>{
+			let x1=e.offsetX/$("#hm-overlay").width();												// Get x pos
+			let y1=e.offsetY/$("#hm-overlay").height();												// Y
+			if ((Math.abs(x-x1) < wid) && (Math.abs(y-y1) < hgt)) success()							// If in range, run success callback
+			else 												  failure()							// Run failure callback
+			});
+	}
+
 	HandleDone(action)																			// HANDLE DONE WITH INTERACTION
 	{
 		if (action.doneAnimation) 	this.Success("play",()=>{ done(action)} );						// Show success animation, then handle done
 		else						next(action);													// Handle done
 		
 		function next(action) {																		// HANDLE DONE NEXT MOVE
+			$("#hm-overlay").off("click");															// Remove click handler(s)			
 			if (action.done == "next") 		$("#hm-pageNext").trigger("click");						// Go onto next page
 			else if (action.done == "play") $("#hm-overlay").html(""),$("#hm-play").trigger("click"); // Resume playing
 			}	
