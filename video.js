@@ -81,8 +81,7 @@ class Video  {
 			else																					// VIDEO
 				str+="<source src='"+base+".mp4'  type='video/mp4'>";								// MP4 Source
 			str+=`</video>
-			<div id="hm-overlay" style="width:100%;height:100%;top:0;position:absolute">
-			</div>`;
+			<div id="hm-overlay" class="hm-overlay"></div>`;
 					
 			$("#"+this.div).html(str);																// Add video tag
 			let myVid=document.getElementById("vplayer");											// Point at player	

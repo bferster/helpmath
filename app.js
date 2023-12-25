@@ -169,7 +169,7 @@ class App  {
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
 	
-//vid.RunPlayer("pause"); act.Run("T00-00-01-06-00")	
+//act.Run("T00-00-01-06-00"); 
 	
 	}
 	

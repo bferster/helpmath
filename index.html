@@ -24,9 +24,10 @@
 							}
 		.hm-login {			text-align:center; color:#185b9d; width:50%; display:none; margin:4vh 25%; 
 							}
-		.hm-screen {		width:60%; border-radius:12px; max-height:calc(100vh - 180px); overflow:hidden; margin:8px 16% 0 16%
+		.hm-screen {		width:60%; border-radius:12px; max-height:calc(100vh - 180px); overflow:hidden; margin:8px 16% 0 16%;
 							}
-
+		.hm-overlay {		position:absolute; width:100%; height:100%; top:0; left:0; font-size:1.6vw; font-weight:bold;
+							}
 		.hm-video {			border-radius:12px; overflow:hidden; border:3px solid #185b9d; position:relative;
 							}
 		.hm-timeSlider { 	width:calc(100% - 52px); margin: 16px 12px 0 12px; background-color:#185b9d; height:4px; border-radius:12px; display:inline-block;
@@ -38,9 +39,9 @@
 		.hm-confirm {		position:absolute;  width:300px; padding: 16px; left:calc(50% - 150px); top:calc(50vh - 50px); user-select:none;	
 							border-radius: 8px; background-color: #fff; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
 							}
-		.hm-popup {			position:absolute;  width:auto; max-width:400px; padding: 12px; left: calc(50% - 200px); top: calc(66% - 50px);
+		.hm-popup {			position:absolute;  width:50%; padding:12px; left:25%; top:20%;
 							border-radius: 8px; background-color: #eee; border: 1px solid #999; box-shadow: 4px 2px 12px 2px #aaa; 
-							font-size: 14px; text-align:center; display:none;
+							font-size: 1.4vw; text-align:center; display:none;
 							}
 		.hm-is {			border-radius:16px; padding:0 8px; width:250px; height: 24px; border:1px solid #999; font-size: 13px;
 							}
@@ -176,11 +177,20 @@
 			}
 		}
 
-	function PopUp(msg, time, div)																	// TIMED POPUP
+	function PopUp(msg, div)																		// POPUP
+	{
+		$("#popupDiv").remove();																		// Kill old one, if any
+		let str="<div id='popupDiv' class='hm-popup'>"; 												// Add div
+		str+=msg+"</div>"; 																				// Add div
+		$(div ? "#"+div : "body").append(str);															// Add popup to div or body
+		$("#popupDiv").fadeIn(500)																		// Animate in	
+	}
+
+	function TimedPopUp(msg, time, div)																// TIMED POPUP
 	{
 		var str="";
 		$("#popupDiv").remove();																		// Kill old one, if any
-		str+="<div id='popupDiv' class='lz-popup'>"; 													// Add div
+		str+="<div id='popupDiv' class='hm-popup'>"; 													// Add div
 		if (time == -1) {																				// If has close but
 			time=100000;																				// Increase time
 			str+="<img id='pu-close' src='img/closedot.gif' style='float:right;cursor:pointer'>";		// Add close button
