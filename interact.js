@@ -8,61 +8,92 @@ class Interact  {
 	{
 		this.acts=[];																				// Holds actions
 		this.path="";																				// Assets path
-		let o={ id:"T00-00-00-03-00", type:"dragsort", items:[] };
-		o.back="back.png";		
-		o.done="next";	o.doneAnimation=true;
+		let o={ id:"T00-00-00-03-00", type:"dragsort", items:[], back:"back.png", done:"next" };
+		o.doneAnimation=true;
 		o.items.push( { sx:5.8,	 sy:28.2, 	ex:44.5,	 ey:58.3, 	wid:10.5 });		
 		o.items.push( { sx:18.6, sy:28.2, 	ex:83.2,	 ey:58.2, 	wid:10.5 });		
 		o.items.push( { sx:31.7, sy:28.2, 	ex:57.4,	 ey:58.2, 	wid:10.5 });		
 		o.items.push( { sx:44.3, sy:28.2, 	ex:70.4,	 ey:58.2, 	wid:10.5 });		
-		o.items.push( { sx:57.4, sy:28.2, 	ex:5.8,	 	ey:58.2, 	wid:10.5 });		
+		o.items.push( { sx:57.4, sy:28.2, 	ex:5.8,	 	 ey:58.2, 	wid:10.5 });		
 		o.items.push( { sx:70.7, sy:28.2, 	ex:18.6,	 ey:58.2, 	wid:10.5 });		
 		o.items.push( { sx:83.2, sy:28.2, 	ex:31.7,	 ey:58.2, 	wid:10.5 });		
 		this.acts[o.id]=o;
 		this.acts["T00-00-01-02-00"]={ id:"T00-00-01-02-00", type:"click", done:"next", items:[ { sx:.58, sy:.83, wid:.025, hgt:.1}] };
 		this.acts["T00-00-01-03-00"]={ id:"T00-00-01-03-00", type:"click", done:"next", items:[ { sx:.52, sy:.83, wid:.025, hgt:.1}] };
 		this.acts["T00-00-01-04-00"]={ id:"T00-00-01-04-00", type:"click", done:"next", items:[ { sx:.38, sy:.83, wid:.025, hgt:.1}] };
-		o={ id:"T00-00-01-05-00", type:"placevalue", items:[] };
-		o.back="back.png";		
-		this.acts[o.id]=o;
-		o={ id:"T00-00-01-06-00", type:"rollover", items:[] };
-		o.back="back.png";		
+		this.acts["T00-00-01-05-00"]={ id:"T00-00-01-05-00", type:"placevalue", back:"back.png", done:"repeat" };
+		o={ id:"T00-00-01-06-00", type:"rollover", items:[], back:"back.png", done:"repeat" };
 		o.items.push( { ex:.57, ey:.735, wid:.05, src:"div" });		
 		o.items.push( { ex:.51, ey:.735, wid:.05, src:"div" });		
 		o.items.push( { ex:.45, ey:.735, wid:.05, src:"div" });		
 		o.items.push( { ex:.395, ey:.735, wid:.05, src:"div"});		
 		o.items.push( { ex:.33, ey:.735, wid:.05, src:"div" });		
 		this.acts[o.id]=o;
+		this.acts["T00-00-01-08-00"]={ id:"T00-00-01-08-00", type:"click", done:"play", items:[ { sx:.52, sy:.52, wid:.3, hgt:.15 }] };
+		this.acts["T00-00-01-09-00"]={ id:"T00-00-01-09-00", type:"wordform", back:"back.png", done:"repeat" };
 	}
 
 	Run(id)
 	{
-		let action=this.acts[id];																	// Point at action
-		this.path="assets/C"+action.id.substring(1,3)+"/"+action.id;								// Asset path + name
-		if (action.type == "dragsort")			this.DragSort(action);								// Dragsort interaction
-		else if (action.type == "click")		this.Click(action);									// Click 
-		else if (action.type == "placevalue")	this.Placevalue(action);							// Placevalue 
-		else if (action.type == "rollover")		this.Rollover(action);								// Rollover
+		this.curAct=this.acts[id];																	// Point at action
+		this.path="assets/C"+act.curAct.id.substring(1,3)+"/"+act.curAct.id;						// Asset path + name
+		$("#hm-overlay").off("click");																// Remove click handler because of recursion		
+		$("#hm-overlay").off("mouseover");															// Mouseover		
+		$("#hm-overlay").off("mouseout");															// Mouseout		
+		if (act.curAct.type == "dragsort")			this.DragSort();								// Dragsort interact.curAct
+		else if (act.curAct.type == "click")		this.Click();									// Click 
+		else if (act.curAct.type == "placevalue")	this.Placevalue();								// Placevalue 
+		else if (act.curAct.type == "rollover")		this.Rollover();								// Rollover
+		else if (act.curAct.type == "wordform")		this.Wordform();								// Wordform
+	
+		$("#hm-overlay").on("click", (e)=>{															// ON OVERLAY CLICK
+			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
+			let y=e.offsetY/$("#hm-overlay").height();												// Y
+			trace(x.toFixed(2),y.toFixed(2));														// Log
+			});
 	}
 
-	Click(action,num=0)																			// CLICK INTERACTION
+	Click(num=0)																				// CLICK INTERACTION
 	{
-		let o=action.items[num];																	// Point at item
+		let o=this.curAct.items[num];																// Point at 1st item
 		this.OnClick(o.sx,o.sy,o.wid,o.hgt,()=>{													// On click subroutine
 				Sound("ding");																		// Ding			
-				this.HandleDone(action);															// Handle done
+				this.Done();																		// Handle done
 				},()=>{	this.Failure(); }															// Handle failure
 			);
-		}
+	}
 
-	Rollover(action)																			// PLACEVALUE INTERACTION
+	Wordform()																					// WORDFORM INTERACTION
+	{
+		let str="";
+		let words=["27250:twenty-seven thousand, two hundred fifty",
+				"24532:twenty-four thousand, five hundred thirty two",
+				"99998:ninety-nine thousand, nine hundred ninety eight",
+				"15422:fifteen thousand, four hundred twenty two",
+				"99998:ninety-nine thousand, nine hundred ninety eight",
+				"197:one hundred ninety seven",
+				"2001:two thousand one",
+				"652:six hundred fifty two"
+				];
+		let n=Math.floor(Math.random()*8);
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;		// Add back
+		str+=`<div style="position:absolute;cursor:pointer;left:10%;top:53%">${words[n].split(":")[1]}</div>		
+			<input id="hm-act" style="font-size:1.6vw;font-weight:bold;width:11vw;padding:5px;position:absolute;left:30%;top:64%">`;		
+		$("#hm-overlay").html(str);																	// Add items to markup														
+		this.OnClick(.64,.68,.1,.05,()=>{															// On click enter button
+			trace(33)
+			});																
+		this.OnClick(.51,.42,.1,.05);																// On click done button
+	}
+	
+	Rollover()																					// PLACEVALUE INTERACTION
 	{
 		let i,n,o,str="";
 		let places=["ones","tens","hundreds","thousands","ten thousands"];							// Place names
 		let num=Math.floor(Math.random()*99999+10000);												// Get random number from 10000-99999							
-		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
-		for (i=0;i<action.items.length;++i) {														// For each item
-			o=action.items[i];																		// Point at items
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;	// Add back
+		for (i=0;i<act.curAct.items.length;++i) {													// For each item
+			o=act.curAct.items[i];																	// Point at items
 			if (o.src == "div")	{																	// If a div
 				n=(""+num).substring(5-i,4-i);														// Isolate digit	
 				if (i == 3) n+=",";																	// Add comma		
@@ -71,7 +102,7 @@ class Interact  {
 			}
 		$("#hm-overlay").html(str);																	// Add items to markup														
 		
-		for (i=0;i<action.items.length;++i) {														// For each item
+		for (i=0;i<act.curAct.items.length;++i) {													// For each item
 			this.OnOver("hm-act-"+i,(n)=>{															// OnOver routine
 				let dig=(""+num).substring(5-n,4-n);
 				let pv=n*10
@@ -81,23 +112,17 @@ class Interact  {
 				},(n)=>{ $("#popupDiv").remove(); });												// Kill popup						
 			}
 		
-		this.OnClick(.78,.75,.11,.05,()=>{															// OnClick routine
-			$("#hm-overlay").off("click");															// Remove click handler because of recursion		
-			$("#hm-overlay").off("mouseover");														// Mouseover		
-			$("#hm-overlay").off("mouseout");														// Mouseout		
-			Sound("ding");																			// Ding			
-			this.Rollover(action);																	// Do it again
-			});
+		this.OnClick(.78,.75,.11,.05);																// On click done button
 	}
 
-	Placevalue(action)																				// PLACEVALUE INTERACTION
+	Placevalue()																				// PLACEVALUE INTERACTION
 	{
 		let i,str="";
 		let num=Math.floor(Math.random()*499+100);													// Get random number from 100-4S99							
 		let ones=num%10;																			// Isolate ones
 		let tens=Math.floor(num%100/10);															// Tens
 		let hundreds=Math.floor(num/100);															// Hundreds
-		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;		// Add back
 		str+=`<div style="position:absolute;width:24%;height:52%;top:12vw;left:1.4vw;text-align:center">`;
 		for (i=0;i<hundreds;++i)str+=`<img src="img/block.png" style="width:${57-Math.min(30,hundreds*5)}%;margin:3% 3%">`; 
 		str+=`</div><div style="position:absolute;width:24%;height:52%;top:12vw;left:16vw;text-align:center">`;
@@ -109,41 +134,36 @@ class Interact  {
 		<div style="position:absolute;left:38%;top:90%">${tens}</div>
 		<div style="position:absolute;left:63%;top:90%">${ones}</div>`;
 		$("#hm-overlay").html(str);																	// Add items to markup														
-	
-		this.OnClick(.9,.73,.1,.05,()=>{															// Onclick routine
-			$("#hm-overlay").off("click");															// Remove click handler becauswe of recursion		
-			Sound("ding");																			// Ding			
-			this.Placevalue(action);																// Do it again
-			});
-	}
+		this.OnClick(.9,.73,.1,.05);																// On click done button
+		}
 
-	DragSort(action)																				// DRAGSORT INTERACTION
+	DragSort()																					// DRAGSORT INTERACTION
 	{
 		let i,o,str="";
 		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
-		if (action.back)	str+=`<img src="${this.path}-${action.back}" style="width:100%">`;		// Add back
-		for (i=0;i<action.items.length;++i) {														// For each item
-			o=action.items[i];																		// Point at items
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;		// Add back
+		for (i=0;i<act.curAct.items.length;++i) {														// For each item
+			o=act.curAct.items[i];																		// Point at items
 			o.status=false;																			// Reset status
 			str+=`<img id="hm-act-${i}" src="${this.path}-${i}.png" style="position:absolute;left:${o.sx}%;top:${o.sy}%;width:${o.wid}%">`;
 			}
 		str+=this.Success();																		// Add success animation markup
 		$("#hm-overlay").html(str);																	// Add items to markup														
-		for (i=0;i<action.items.length;++i) {
+		for (i=0;i<act.curAct.items.length;++i) {
 			$("#hm-act-"+i ).draggable({															// Make item draggable
 				stop:(e,ui)=>{																		// On drag stop
 					let j=e.target.id.substring(7);													// Get index
-					let o=action.items[j];															// Point at item
+					let o=act.curAct.items[j];															// Point at item
 					if ((Math.abs(ui.position.left/w*100-o.ex) < o.wid*.8) && (Math.abs(ui.position.top/h*100-o.ey) < o.wid*.8)) { // If correct
 						o.status=true;																// Set status
-						$("#hm-act-"+j).css({ left:o.ex+"%", top:o.ey+"%"});					// Move in place
-						for (j=0;j<action.items.length;++j)	if (!action.items[j].status) break;		// Go through status
-							if (j == action.items.length) this.HandleDone(action);					// All correct!, so gandle done 
+						$("#hm-act-"+j).css({ left:o.ex+"%", top:o.ey+"%"});						// Move in place
+						for (j=0;j<act.curAct.items.length;++j)	if (!act.curAct.items[j].status) break;		// Go through status
+							if (j == act.curAct.items.length) this.Done(act.curAct);					// All correct!, so gandle done 
 							Sound("img/tada.mp3");													// Correct sound
 							}
 						else{																		// Wrong
 							o.status=false;															// Set status
-							$("#hm-act-"+j).css({ left:o.sx+"%", top:o.sy+"%" });			// Move back
+							$("#hm-act-"+j).css({ left:o.sx+"%", top:o.sy+"%" });					// Move back
 							Sound("img/error.mp3");													// Incorrect sound
 						}
 					}
@@ -166,28 +186,28 @@ class Interact  {
 			});
 	}
 
-	OnClick(x, y, wid, hgt, success, failure=()=>{})											// REACT TO A MOUSE CLICK
+	OnClick(x, y, wid, hgt, success, failure=()=>{})												// REACT TO A MOUSE CLICK
 	{
 		$("#hm-overlay").on("click", (e)=>{
-			let x1=e.offsetX/$("#hm-overlay").width();												// Get x pos
-			let y1=e.offsetY/$("#hm-overlay").height();												// Y
-			if ((Math.abs(x-x1) < wid) && (Math.abs(y-y1) < hgt)) success();						// If in range, run success callback
-			else 												  failure();						// Run failure callback
+			if (!success) success=()=> { Sound("ding"); act.Done(); };									// Default success
+			let x1=e.offsetX/$("#hm-overlay").width();													// Get x pos
+			let y1=e.offsetY/$("#hm-overlay").height();													// Y
+			if ((Math.abs(x-x1) < wid) && (Math.abs(y-y1) < hgt)) success();							// If in range, run success callback
+			else 												  failure();							// Run failure callback
 			});
 	}
 
-	HandleDone(action)																			// HANDLE DONE WITH INTERACTION
+	Done()																							// HANDLE DONE WITH INTERACTION
 	{
-		if (action.doneAnimation) 	this.Success("play",()=>{ next(action)} );						// Show success animation, then handle done
-		else						next(action);													// Handle done
-		
-		function next(action) {																		// HANDLE DONE NEXT MOVE
-			$("#hm-overlay").off("click");															// Remove click handler(s)			
-			$("#hm-overlay").off("mouseover");														// Mouseover		
-			$("#hm-overlay").off("mouseout");														// Mouseout		
-			if (action.done == "next") 		$("#hm-pageNext").trigger("click");						// Go onto next page
-			else if (action.done == "play") $("#hm-overlay").html(""),$("#hm-play").trigger("click"); // Resume playing
+		if (act.curAct.doneAnimation) 	act.Success("play",()=>{ next(act.curAct)} );					// Show success animation, then handle done
+		else							next();															// Handle done
+
+		function next() {																				// HANDLE DONE NEXT MOVE
+			if (act.curAct.done == "next") 			$("#hm-pageNext").trigger("click");					// Go onto next page
+			else if (act.curAct.done == "play") 	$("#hm-overlay").html(""),$("#hm-play").trigger("click"); // Resume playing
+			else if (act.curAct.done == "repeat")	act.Run(act.curAct.id);								// Recurse
 			}	
+
 	}
 
 	Success(play=false, callback)																// SETUP OR PLAY SUCCESS ANIMATION

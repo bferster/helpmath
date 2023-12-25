@@ -169,7 +169,7 @@ class App  {
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
 	
-//act.Run("T00-00-01-06-00"); 
+act.Run("T00-00-01-09-00"); 
 	
 	}
 	
@@ -296,10 +296,10 @@ class App  {
 						{name:"Place-value tens",start:86.35,end:90.64,status:0,triggers:[{time:4,id:"T00-00-01-03-00"}],links:[],id:"00-00-01-03"},
 						{name:"Place-value hundred",start:94.29,end:98.41,status:0,triggers:[{time:4,id:"T00-00-01-04-00"}],links:[],id:"00-00-01-04"},
 						{name:"Ones / tens / hundreds places ",start:103.29,end:156.67,status:0,triggers:[{time:"53",id:"T00-00-01-05-00"}],links:[],id:"00-00-01-05"},
-						{name:"Ones / tens / hundreds places ",start:160,end:182,status:0,links:[],id:"00-00-01-06",triggers:[]},
+						{name:"Ones / tens / hundreds places ",start:160,end:182,status:0,links:[],id:"00-00-01-06",triggers:[{time:"22",id:"T00-00-01-06-00"}]},
 						{name:"Ones / thousands groups",start:185.5,end:223,status:0,links:[],id:"00-00-01-07",triggers:[]},
-						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08",triggers:[]},
-						{name:"Word form exercise",start:263.56,end:286.96,status:0,links:[],id:"00-00-01-09",triggers:[]},
+						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08",triggers:[{time:"26",id:"T00-00-01-08-00"}]},
+						{name:"Word form exercise",start:263.56,end:286,status:0,links:[],id:"00-00-01-09",triggers:[{time:"22.04",id:"T00-00-01-09-00"}]},
 						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10",triggers:[]},
 						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[]},
 						{name:"Rounding",start:382.64,end:404.82,status:0,links:[],triggers:[],id:"00-00-01-12"}
