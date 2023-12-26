@@ -169,7 +169,7 @@ class App  {
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
 	
-act.Run("T00-00-01-09-00"); 
+//act.Run("T00-00-01-11-00"); 
 	
 	}
 	
@@ -300,25 +300,30 @@ act.Run("T00-00-01-09-00");
 						{name:"Ones / thousands groups",start:185.5,end:223,status:0,links:[],id:"00-00-01-07",triggers:[]},
 						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08",triggers:[{time:"26",id:"T00-00-01-08-00"}]},
 						{name:"Word form exercise",start:263.56,end:286,status:0,links:[],id:"00-00-01-09",triggers:[{time:"22.04",id:"T00-00-01-09-00"}]},
-						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10",triggers:[]},
-						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[]},
+						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10",triggers:[{time:"64.97",id:"T00-00-01-10-00"}]},
+						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[{time:"18",id:"T00-00-01-11-00"}]},
 						{name:"Rounding",start:382.64,end:404.82,status:0,links:[],triggers:[],id:"00-00-01-12"}
 						]},	// TOPIC
 					{ name: "Learn It!", pages:[						
-						{ name: "Page 0", start:4,  end:12.6, status:0 },
+						{ name: "Introduction", start:4, end:12.6,status:0 },
+						{ name: "Word form", start:15.8,end:71.2, status:0 },
 						]},	// TOPIC
 					{ name: "Try It!", pages:[						
-						{ name: "Page 0", start:4,  end:12.6, status:0 },
-						]},	// TOPIC
+						{ name: "Introduction", start:4,  end:12.6, status:0 },
+						{ name: "?", start:4,  end:12.6, status:0 },
+					]},	// TOPIC
 						{ name: "Play It!", pages:[						
-						{ name: "Page 0", start:4,  end:12.6, status:0 },
-						]},	// TOPIC
+						{ name: "Introduction", start:4,  end:12.6, status:0 },
+						{ name: "?", start:4,  end:12.6, status:0 },
+					]},	// TOPIC
 					{ name: "Practice Test", pages:[						
-						{ name: "Page 0", start:4,  end:12.6, status:0 },
-						]},	// TOPIC
+						{ name: "Introduction", start:4,  end:12.6, status:0 },
+						{ name: "?", start:4,  end:12.6, status:0 },
+					]},	// TOPIC
 					{ name: "Final Quiz", pages:[						
-						{ name: "Page 0", start:4,  end:12.6, status:0 },
-						]}], // TOPICS END
+						{ name: "Introduction", start:4,  end:12.6, status:0 },
+						{ name: "?", start:4,  end:12.6, status:0 },
+					]}], // TOPICS END
 					
 			}],  // LESSON END
 		}	// MODULES

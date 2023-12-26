@@ -29,8 +29,10 @@ class Interact  {
 		o.items.push( { ex:.395, ey:.735, wid:.05, src:"div"});		
 		o.items.push( { ex:.33, ey:.735, wid:.05, src:"div" });		
 		this.acts[o.id]=o;
-		this.acts["T00-00-01-08-00"]={ id:"T00-00-01-08-00", type:"click", done:"play", items:[ { sx:.52, sy:.52, wid:.3, hgt:.15 }] };
+		this.acts["T00-00-01-08-00"]={ id:"T00-00-01-08-00", type:"click", done:"play", items:[ { sx:.52, sy:.52, wid:.3, hgt:.05 }] };
 		this.acts["T00-00-01-09-00"]={ id:"T00-00-01-09-00", type:"wordform", back:"back.png", done:"repeat" };
+		this.acts["T00-00-01-10-00"]={ id:"T00-00-01-10-00", type:"click", done:"play", items:[ { sx:.52, sy:.42, wid:.5, hgt:.1 }] };
+		this.acts["T00-00-01-11-00"]={ id:"T00-00-01-11-00", type:"wordform", data:1, back:"back.png", done:"repeat" };
 	}
 
 	Run(id)
@@ -55,12 +57,12 @@ class Interact  {
 
 	Click(num=0)																				// CLICK INTERACTION
 	{
-		let o=this.curAct.items[num];																// Point at 1st item
+		let o=this.curAct.items[num];																// Point at item (defaults to first)
 		this.OnClick(o.sx,o.sy,o.wid,o.hgt,()=>{													// On click subroutine
-				Sound("ding");																		// Ding			
-				this.Done();																		// Handle done
-				},()=>{	this.Failure(); }															// Handle failure
-			);
+			Sound("ding");																			// Ding			
+			this.Done();																			// Handle done
+			},()=>{	this.Failure(); }																// Handle failure
+		);
 	}
 
 	Wordform()																					// WORDFORM INTERACTION
@@ -75,13 +77,25 @@ class Interact  {
 				"2001:two thousand one",
 				"652:six hundred fifty two"
 				];
-		let n=Math.floor(Math.random()*8);
-		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;		// Add back
+		let n=Math.floor(Math.random()*words.length);												// Get random word
+		this.correct=words[n].split(":")[0];														// Save correct answer
+		
+		if (this.curAct.data == 1) {																// If expanded
+			this.correct=n=Math.floor(Math.random()*9999)+200;										// Get random number from 200-9999							
+			words[0]=this.correct+":";																// Add correct
+			if (n > 999) words[0]+=Math.floor(n/1000)+",000 + ";									// Add thousands
+			if (n > 99)  words[0]+=Math.floor(n%1000/100)+"00 + ";									// Hundreds
+			if (n > 9)   words[0]+=Math.floor(n%100/10)+"0 + ";										// Tens
+			words[0]+=n%10;																			// Ones
+			n=0;
+			}
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;	// Add back
 		str+=`<div style="position:absolute;cursor:pointer;left:10%;top:53%">${words[n].split(":")[1]}</div>		
 			<input id="hm-act" style="font-size:1.6vw;font-weight:bold;width:11vw;padding:5px;position:absolute;left:30%;top:64%">`;		
 		$("#hm-overlay").html(str);																	// Add items to markup														
 		this.OnClick(.64,.68,.1,.05,()=>{															// On click enter button
-			trace(33)
+			if ($("#hm-act").val() == this.correct)	this.Success(true);								// Success animation
+			else									this.Failure();									// Failure notice
 			});																
 		this.OnClick(.51,.42,.1,.05);																// On click done button
 	}
@@ -141,30 +155,29 @@ class Interact  {
 	{
 		let i,o,str="";
 		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
-		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;		// Add back
-		for (i=0;i<act.curAct.items.length;++i) {														// For each item
-			o=act.curAct.items[i];																		// Point at items
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;	// Add back
+		for (i=0;i<act.curAct.items.length;++i) {													// For each item
+			o=act.curAct.items[i];																	// Point at items
 			o.status=false;																			// Reset status
 			str+=`<img id="hm-act-${i}" src="${this.path}-${i}.png" style="position:absolute;left:${o.sx}%;top:${o.sy}%;width:${o.wid}%">`;
 			}
-		str+=this.Success();																		// Add success animation markup
 		$("#hm-overlay").html(str);																	// Add items to markup														
 		for (i=0;i<act.curAct.items.length;++i) {
 			$("#hm-act-"+i ).draggable({															// Make item draggable
 				stop:(e,ui)=>{																		// On drag stop
 					let j=e.target.id.substring(7);													// Get index
-					let o=act.curAct.items[j];															// Point at item
+					let o=act.curAct.items[j];														// Point at item
 					if ((Math.abs(ui.position.left/w*100-o.ex) < o.wid*.8) && (Math.abs(ui.position.top/h*100-o.ey) < o.wid*.8)) { // If correct
 						o.status=true;																// Set status
 						$("#hm-act-"+j).css({ left:o.ex+"%", top:o.ey+"%"});						// Move in place
 						for (j=0;j<act.curAct.items.length;++j)	if (!act.curAct.items[j].status) break;		// Go through status
-							if (j == act.curAct.items.length) this.Done(act.curAct);					// All correct!, so gandle done 
+							if (j == act.curAct.items.length) this.Done(act.curAct);				// All correct!, so gandle done 
 							Sound("img/tada.mp3");													// Correct sound
 							}
 						else{																		// Wrong
 							o.status=false;															// Set status
 							$("#hm-act-"+j).css({ left:o.sx+"%", top:o.sy+"%" });					// Move back
-							Sound("img/error.mp3");													// Incorrect sound
+							Sound("img/error1.mp3");												// Incorrect sound
 						}
 					}
 				});
@@ -207,25 +220,33 @@ class Interact  {
 			else if (act.curAct.done == "play") 	$("#hm-overlay").html(""),$("#hm-play").trigger("click"); // Resume playing
 			else if (act.curAct.done == "repeat")	act.Run(act.curAct.id);								// Recurse
 			}	
+	}
+
+	Success(animation, callback)																		// PLAY SUCCESS ANIMATION
+	{
+		Sound("img/yea.mp3");																			// Yea sound
+		$("#hm-success").remove();																		// Remove old image																								
+		let pics=["thumbsup","ribbon","checkbox","heart","accept"];										// Possible images
+		let pic=pics[Math.floor(Math.random()*pics.length)];		
+		if (animation) {																				// if an animatiom
+			$("#hm-overlay").append(`<img id="hm-success" src="img/${pic}.png" style="left:50%;top:50%;position:absolute;width:0;z-index:99">`);
+			let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
+
+			$("#hm-success").animate({ width:"50%", left:(w/2-w/4)+"px", top:((h-(w/2))/2)+"px"},1000, done());	// Zoom icon out
+		
+		function done() {																				// WHEN ANIMATION IS FINISHED	
+			setTimeout(()=>{																			// Wait 
+				$("#hm-success").fadeOut(500, ()=>{ $("#hm-success").remove();	});						// Fade out icon
+				if (callback) callback(); }, 1500); }													// Run callback if set
+			}
 
 	}
 
-	Success(play=false, callback)																// SETUP OR PLAY SUCCESS ANIMATION
+	Failure(callback)																				// SETUP OR PLAY FAILURE ANIMATION
 	{
-		if (!play)	return `<img id="hm-success" src="img/ribbon.png" style="left:50%;top:50%;position:absolute;width:0;z-index:99">`;// Just getting markup
-		Sound("img/yea.mp3");																		// Yea sound
-		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
-		$("#hm-success").animate({ width:"50%", left:(w/2-w/4)+"px", top:((h-(w/2))/2)+"px" }, 		// Zoom out
-			1500, ()=>{ setTimeout(callback,1000) }); 												// Then wait
-	}
-
-	Failure(load=false)																			// SETUP OR PLAY FAILURE ANIMATION
-	{
-		if (load) 																					// Just getting markup
-		return `<img id="hm-success" src="img/safdface.png" style="left:50%;top:50%;position:absolute;width:0;z-index:99">`;
-		Sound("img/sorry.mp3");																		// Sorry sound
-		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
-		$("#hm-success").animate({ width:"50%", left:(w/2-w/4)+"px", top:((h-(w/2))/2)+"px" }, 1500); // Zoom out
+		let snds=["sorry","error1","error2","error3","error4"];											// Possible sounds
+		let snd=snds[Math.floor(Math.random()*snds.length)];											// Pick one	
+		Sound("img/"+snd+".mp3");																		// Play it
 	}
 
 
