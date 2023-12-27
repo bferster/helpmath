@@ -102,10 +102,12 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
+//this.topic=2;	
 		if (!app.course.modules[app.module].lessons[app.lesson])	return;							// Quit if no lesson
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		if (!curLesson.topics[app.topic])							return;							// Quit if no topic
 		curPage=curLesson.topics[app.topic].pages[app.page];										// Point at page
+
 		$("#auth-start").val(curPage.start); $("#auth-end").val(curPage.end);$("#auth-name").val(curPage.name);	 //  For authoring
 
 		let str=`<img src="img/logo2.png" style="float:left;height:5vw;margin:16px 0 0 16px">
@@ -168,9 +170,7 @@ class App  {
 		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
-	
-//act.Run("T00-00-01-11-00"); 
-	
+//act.Run("T00-00-01-11-00");	
 	}
 	
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR
@@ -230,7 +230,8 @@ class App  {
 			<img src="img/closebut.png" onclick="$('#hm-map').remove()" title="Close / Cerrar"style="width:16px;float:right;margin:-16px -16px;cursor:pointer">
 				<div id="hm-mapData">
 					<div style="width:100%;margin:-18px 0 16px 0;color:#185b9d;font-family:ComicSans,sans-serif;font-size:2vw;text-align:center"><b>The Map</b></div>
-						<div id="hm-dataLeft" style="position:absolute;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column">
+					<div style="position:absolute;left:50%;top:calc(2vw + 24px);height:calc(100% - 2vw - 48px);background-color:#185b9d;width:1px"></div>
+					<div id="hm-dataLeft" style="position:absolute;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column">
 						<div>
 							<div class="hm-topicbut" id="hm-topic-0">${trans("Your World")}</div>
 							<div class="hm-topicbut" id="hm-topic-1">${trans("Important words")}</div>
@@ -241,7 +242,7 @@ class App  {
 							<div class="hm-topicbut" id="hm-topic-6">${trans("Final quiz")}</div>
 						</div>
 					</div>
-				<div id="hm-dataRight" style="position:absolute;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column;right:24px"></div>
+				<div id="hm-dataRight" style="position:absolute;width:50%;height:100%;top:1.2vw;display:flex;justify-content:center;flex-direction:column;right:-24px"></div>
 			</div>`
 
 		$("#hm-video").append(str.replace(/\t|\n|\r/g,""));											// Add markup
@@ -259,8 +260,10 @@ class App  {
 		function pages() {																			// SHOW PAGES
 			let i, str="<div>";
 			let o=curLesson.topics[app.topic];														// Point at topic
-			for (i=1;i<o.pages.length;++i)															// For each page
-				str+=`<div class="hm-termitem" id="hm-topicpage-${i}">${trans((o.pages[i].name))}</div>`;// Add item
+			for (i=1;i<o.pages.length;++i) {														// For each page
+				if (o.pages[i].name)																// Skip practices
+					str+=`<div class="hm-termitem" id="hm-topicpage-${i}">${trans((o.pages[i].name))}</div>`;// Add item
+					}
 			str+="</div>";	
 			$("#hm-dataRight").html(str.replace(/\t|\n|\r/g,""));									// Add markup
 
@@ -299,14 +302,48 @@ class App  {
 						{name:"Ones / tens / hundreds places ",start:160,end:182,status:0,links:[],id:"00-00-01-06",triggers:[{time:"22",id:"T00-00-01-06-00"}]},
 						{name:"Ones / thousands groups",start:185.5,end:223,status:0,links:[],id:"00-00-01-07",triggers:[]},
 						{name:"Word form",start:225.7,end:262,status:0,links:[],id:"00-00-01-08",triggers:[{time:"26",id:"T00-00-01-08-00"}]},
-						{name:"Word form exercise",start:263.56,end:286,status:0,links:[],id:"00-00-01-09",triggers:[{time:"22.04",id:"T00-00-01-09-00"}]},
+						{name:"",start:263.56,end:286,status:0,links:[],id:"00-00-01-09",triggers:[{time:"22.04",id:"T00-00-01-09-00"}]},
 						{name:"Standard and expanded form",start:288.06,end:360.38,status:0,links:[],id:"00-00-01-10",triggers:[{time:"64.97",id:"T00-00-01-10-00"}]},
-						{name:"Standard exercise",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[{time:"18",id:"T00-00-01-11-00"}]},
+						{name:"",start:362,end:380.5,status:0,links:[],id:"00-00-01-11",triggers:[{time:"18",id:"T00-00-01-11-00"}]},
 						{name:"Rounding",start:382.64,end:404.82,status:0,links:[],triggers:[],id:"00-00-01-12"}
 						]},	// TOPIC
 					{ name: "Learn It!", pages:[						
-						{ name: "Introduction", start:4, end:12.6,status:0 },
-						{ name: "Word form", start:15.8,end:71.2, status:0 },
+						{name:"Introduction",start:4,end:12.6,status:0,links:[],triggers:[],id:"00-00-02-00"},
+						{name:"Word form",start:18.1,end:73.6,status:0,links:[],triggers:[],id:"00-00-02-01"},
+						{name:"Standard form",start:75.77,end:134.37,status:0,links:[],triggers:[],id:"00-00-02-02"},
+						{name:"",start:136.98,end:163.44,status:0,links:[],triggers:[{time:"26.36",id:"T00-00-02-03-00"}],id:"00-00-02-03"},
+						{name:"Using models to represent models",start:165.79,end:231.56,status:0,links:[],triggers:[],id:"00-00-02-04"},
+						{name:"",start:233.49,end:274.53,status:0,links:[],triggers:[{time:"40.94",id:"T00-00-02-05-00"}],id:"00-00-02-05"},
+						{name:"",start:277.1,end:339,status:0,links:[],triggers:[{time:"625",id:"T00-00-02-06-00"}],id:"00-00-02-06"},
+						{name:"",start:341.55,end:414.76,status:0,links:[],id:"00-00-02-07",triggers:[{time:"39.04",id:"T00-00-02-07-00"},
+							{time:"65.13",id:"T00-00-02-07-01"},
+							{time:"64.95",id:"T00-00-02-07-02"}]},
+						{name:"Writing numbers",start:417.95,end:473,status:0,links:[],triggers:[],id:"00-00-02-08"},
+						{name:"",start:476.38,end:499.09,status:0,links:[],triggers:[],id:"00-00-02-09"},
+						{name:"Expanded form",start:500.97,end:583.1,status:0,links:[],triggers:[],id:"00-00-02-10"},
+						{name:"",start:585.79,end:622.71,status:0,links:[],triggers:[{time:"11.82",id:"T00-00-02-11-00"},
+							{time:"37.10",id:"T00-00-02-11-01"}],id:"00-00-02-11"},
+						{name:"",start:623.95,end:655.12,status:0,links:[],triggers:[{time:"30.97",id:"T00-00-02-12-00"}],id:"00-00-02-12"},
+						{name:"Round whole Numbers Using a number line",start:658.67,end:737,status:0,links:[],triggers:[{time:"65.02",id:"T00-00-02-13-00"}],id:"00-00-02-13"},
+						{name:"Rounding using rules",start:740.01,end:794.55,status:0,links:[],triggers:[],id:"00-00-02-14"},
+						{name:"Rounding rules",start:797.2,end:825.69,status:0,links:[],triggers:[],id:"00-00-02-15"},
+						{name:"",start:828.02,end:880.93,status:0,links:[],triggers:[{time:"24.71",id:"T00-00-02-16-00"}],id:"00-00-02-16"},
+						{name:"",start:882.41,end:898.65,status:0,links:[],triggers:[{time:"16.44",id:"T00-00-02-17-00"}],id:"00-00-02-17"},
+						{name:"Rounding to hundreds",start:899.81,end:958.92,status:0,links:[],triggers:[],id:"00-00-02-18"},
+						{name:"",start:961.29,end:977.67,status:0,links:[],triggers:[{time:"16.98",id:"T00-00-02-19-00"}],id:"00-00-02-19"},
+						{name:"Rounding to thousands",start:978.68,end:1040.82,status:0,links:[],triggers:[],id:"00-00-02-20"},
+						{name:"",start:1043.25,end:1058.73,status:0,links:[],triggers:[{time:"15.28",id:"T00-00-02-21-00"}],id:"00-00-02-21"},
+						{name:"",start:1060.82,end:1092.37,status:0,links:[],triggers:[{time:"31.75",id:"T00-00-02-22-00"}],id:"00-00-02-22"},
+						{name:"Comparing numbers",start:1093.65,end:1157.59,status:0,links:[],triggers:[{time:"23.61",id:"T00-00-02-23-00"}],id:"00-00-02-23"},
+						{name:"",start:1160.65,end:1175.36,status:0,links:[],triggers:[{time:"17.57",id:"T00-00-02-24-00"}],id:"00-00-02-24"},
+						{name:"Comparison ",start:1176.46,end:1207.52,status:0,links:[],triggers:[],id:"00-00-02-25"},
+						{name:"",start:1209.71,end:1251.88,status:0,links:[],triggers:[{time:"14.22",id:"T00-00-02-26-00"}],id:"00-00-02-26"},
+						{name:"",start:1254.23,end:1269.89,status:0,links:[],triggers:[{time:"13.39",id:"T00-00-02-27-00"}],id:"00-00-02-27"},
+						{name:"Compare",start:1270.65,end:1336.92,status:0,links:[],triggers:[],id:"00-00-02-28"},
+						{name:"",start:1338.91,end:1389.07,status:0,links:[],triggers:[{time:"15.8",id:"T00-00-02-29-00"},
+							{time:"40.81",id:"T00-00-02-29-01"}],id:"00-00-02-29"},
+						{name:"",start:1390.65,end:1417.17,status:0,links:[],triggers:[{time:"26.32",id:"T00-00-02-30-00"}],id:"00-00-02-30"},
+						{name:"",start:1418.13,end:1432.25,status:0,links:[],triggers:[{time:"13.92",id:"T00-00-02-31-00"}],id:"00-00-02-31"},
 						]},	// TOPIC
 					{ name: "Try It!", pages:[						
 						{ name: "Introduction", start:4,  end:12.6, status:0 },
@@ -331,27 +368,5 @@ class App  {
 	}	
 
 
-
-
-	/*
-
-
-
-  	"Introduction" 
-    "Reading and Writing Whole Numbers in Word and Standard Forms" 
-    "Using Models to Represent Numbers"
-    "Identifying Place Value of Whole Numbers"
-    "Reading Numbers Practice"
-    "Write Numbers"
-    "Write Numbers Practice" 
-    "Reading and Writing Numbers in Expanded Form"
-    "Word, Standard and Expanded Form Practice"
-	"Round Whole Numbers Using a Number Line"
-    "Round Whole Numbers to the Nearest Thousands Using Rules"
-    "Rounding Whole Numbers Practice"
-    "Compare Whole Numbers"
-    "Order Whole Numbers Problem Solving"
-*/
-
-
+ 
 } // App class closure

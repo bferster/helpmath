@@ -38,6 +38,7 @@ class Interact  {
 	Run(id)
 	{
 		this.curAct=this.acts[id];																	// Point at action
+		if (!this.curAct) { trace("BAD INTERACTION"); return; };									// Quit if no interaction found
 		this.path="assets/C"+act.curAct.id.substring(1,3)+"/"+act.curAct.id;						// Asset path + name
 		$("#hm-overlay").off("click");																// Remove click handler because of recursion		
 		$("#hm-overlay").off("mouseover");															// Mouseover		

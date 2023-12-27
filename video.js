@@ -173,18 +173,17 @@ class Video  {
 	SetTimes()																					// AUTRHOR PAGES
 	{
 		$("#popupDiv").remove();																	// Kill old one, if any
-		let str=`<div id='popupDiv' class='hm-popup' style="width:500px;top:calc(100vh - 250px);">
+		let str=`<div id='popupDiv' class='hm-popup' style="width:500px;top:calc(100vh - 250px);font-size:13px;">
 		<img id="auth-close" style="float:right" src="img/closedot.gif">
 		<b>AUTHOR PAGES</b><br><br>
-		START: <input class="hm-is" id="auth-start" style="width:40px">
-		TIME: <input class="hm-is" id="auth-time" style="width:80px">
-		END: <input class="hm-is" id="auth-end" style="width:40px"></p>
-		<p>NAME : <input class="hm-is" id="auth-name" style="width:200px"></p>
+		START: <input class="hm-is" id="auth-start" style="width:40px">  &nbsp; 
+		TIME: <input class="hm-is" id="auth-time" style="width:100px">  &nbsp; 
+		END: <input class="hm-is" id="auth-end" style="width:40px">
+		<div style="margin:16px 0">NAME: <input class="hm-is" id="auth-name" style="width:200px"> &nbsp; <div id="auth-new" class="hm-bs">NEW</div></div>
 		<div id="auth-set" class="hm-bs" style="float:left">SET PAGE</div> 												
 		<div id="auth-save" class="hm-bs"style="float:right">SAVE ALL</div>
-		<div id="auth-trigger" class="hm-bs"style="">ADD TRIGGER</div><br>
-		<p>Type "NEW" in name to add a new page</p></div>`; 												
-		$("body").append(str);																		// Add tool to body
+		<div id="auth-trigger" class="hm-bs"style="">ADD TRIGGER</div>`;
+		$("body").append(str.replace(/\t|\n|\r/g,""));												// Add tool to body
 		$("#popupDiv").draggable();																	// Make it draggable
 		$("#auth-start").val(curPage.start);														// Get initial start
 		$("#auth-end").val(curPage.end);															// End
@@ -194,14 +193,15 @@ class Video  {
 		$("#auth-close").click(function() { $("#popupDiv").remove(); });							// Remove on click of close but
 		$("#popupDiv").fadeIn(500);																	// Animate in and out		
 
+		$("#auth-new").click(function() {															// When saving
+			let o={ name:"New page",start:curPage.end,end:curPage.end+100,status:0,links:[], triggers:[] };	// Base
+			curLesson.topics[app.topic].pages.splice(app.page-0+1,0,o);								// Add in place
+			app.page++;																				// Go to page
+			app.ShowLesson();																		// Reset
+			Sound("ding");																			// Bonk
+			});
+		
 		$("#auth-set").click(function() {															// When saving
-			if ($("#auth-name").val() == "NEW") {													// If adding a new page
-				let o={ name:"New page",start:vid.curTime,end:vid.curTime+100,status:0,links:[] };	// Base
-				curLesson.topics[app.topic].pages.splice(app.page-0+1,0,o);							// Add in place
-				app.ShowLesson();																	// Reset
-				Sound("yea");																		// Ding
-				return;
-				}
 			curPage.start=$("#auth-start").val()-0;													// Start
 			curPage.end=$("#auth-end").val()-0;														// End
 			curPage.name=$("#auth-name").val();														// Name
