@@ -33,6 +33,8 @@ class Interact  {
 		this.acts["T00-00-01-09-00"]={ id:"T00-00-01-09-00", type:"wordform", back:"back.png", done:"repeat" };
 		this.acts["T00-00-01-10-00"]={ id:"T00-00-01-10-00", type:"click", done:"play", items:[ { sx:.52, sy:.42, wid:.5, hgt:.1 }] };
 		this.acts["T00-00-01-11-00"]={ id:"T00-00-01-11-00", type:"wordform", data:1, back:"back.png", done:"repeat" };
+		this.acts["T00-00-02-03-00"]={ id:"T00-00-02-03-00", type:"wordform2", back:"back.png", done:"repeat" };
+		this.acts["T00-00-02-05-00"]={ id:"T00-00-02-05-00", type:"models", back:"back.png", done:"repeat" };
 	}
 
 	Run(id)
@@ -48,6 +50,8 @@ class Interact  {
 		else if (act.curAct.type == "placevalue")	this.Placevalue();								// Placevalue 
 		else if (act.curAct.type == "rollover")		this.Rollover();								// Rollover
 		else if (act.curAct.type == "wordform")		this.Wordform();								// Wordform
+		else if (act.curAct.type == "wordform2")	this.Wordform2();								// Wordform2
+		else if (act.curAct.type == "models")		this.Models();									// Models
 	
 		$("#hm-overlay").on("click", (e)=>{															// ON OVERLAY CLICK
 			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
@@ -66,16 +70,81 @@ class Interact  {
 		);
 	}
 
+	Models()																					// MODELS INTERACTION
+	{
+		let i,str="";	
+		let ones=0,tens=0,hundreds=0,thousands=0;
+		let n=Math.floor(Math.random()*2999)+1000;											// Get random number from 1000-3999							
+
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;	// Add back
+		str+=`<div id="hm-act1000" style="position:absolute;left:6%;top:32%;width:15%"></div>	
+			<div id="hm-act100"  style="position:absolute;left:23%;top:32%;width:15%"></div>	
+			<div id="hm-act10"   style="position:absolute;left:39%;top:32%;width:15%"></div>	
+			<div id="hm-act0"    style="position:absolute;left:55%;top:32%;width:15%;height:100%"></div>	
+			<div style="position:absolute;left:74%;top:30%">Use blocks to<br>represent ${n}.</div>;	
+			<div id="hm-actv"    style="position:absolute;left:76%;top:55%"></div>`;	
+	
+		this.OnClick(.62,.24,.10,.1,()=>{	ones=Math.min(ones+1,9);	 	 	draw(); });			// On click ones
+		this.OnClick(.45,.24,.10,.1,()=>{	tens=Math.min(tens+1,9);	 	 	draw(); });			// Tens
+		this.OnClick(.29,.24,.10,.1,()=>{	hundreds=Math.min(hundreds+1,9); 	draw(); })			// Hundreds
+		this.OnClick(.13,.24,.10,.1,()=>{	thousands=Math.min(thousands+1,9);	draw(); })			// Thousands
+			
+	
+		$("#hm-overlay").html(str);																	// Add items to markup														
+		this.OnClick(.88,.74,.15,.05, ()=>{});														// On done button
+		this.OnClick(.83,.953,.15,.05)																// On new problem
+		this.OnClick(.13,.62,.5,.05,()=>{ ones=tens=hundreds=thousands=0;  draw(); })				// On erase button
+
+		function draw() {																		// DRAW ICONS
+			str="";
+			Sound("click");																			// Click
+			$("#hm-actv").html(thousands*1000+hundreds*100+tens*10+ones);							// Show number							
+			for (i=0;i<ones;++i)																	// For each one
+				str+=`<img src="img/unitblock.png" style="width:15%;margin:0 15% 10% 15%">`; 		// Add image
+			$("#hm-act0").html(str); str="";														// Add items to markup														
+			for (i=0;i<tens;++i)																	// For each one
+				str+=`<img src="img/bar.png" style="width:10%;margin:0 4% 10% 4%">`;				// Add image
+			$("#hm-act10").html(str); str="";														// Add items to markup														
+			for (i=0;i<hundreds;++i)																// For each one
+				str+=`<img src="img/block.png" style="width:33%;margin:0 10% 10% 1%">`;				// Add image
+			$("#hm-act100").html(str);	str="";														// Add items to markup														
+			for (i=0;i<thousands;++i)																// For each one
+			str+=`<img src="img/cube.png" style="width:33%;margin:0 10% 10% 1%">`;					// Add image
+			$("#hm-act1000").html(str);	str="";														// Add items to markup														
+			}
+	}
+
+	Wordform2()																					// WORDFORM INTERACTION
+	{
+		let str="";
+		let words=["250:two hundred fifty",
+				"532:five hundred thirty two",
+				"1,998:one thousand, nine hundred ninety eight",
+				"3,422:three thousand, four hundred twenty two",
+				"998:nine hundred ninety eight",
+				"697:six hundred ninety seven",
+				"4,001:four thousand one",
+				"622:six hundred twenty two"
+				];
+		let n=Math.floor(Math.random()*words.length);												// Get random word
+		this.correct=words[n].split(":")[0];														// Save correct answer
+		if (act.curAct.back)	str+=`<img src="${this.path}-${act.curAct.back}" style="width:100%">`;	// Add back
+		str+=`<div style="position:absolute;;left:8%;top:55%">${words[n].split(":")[1]}</div>		
+		<div style="position:absolute;cursor:pointer;left:81%;top:55%">${words[n].split(":")[0]}</div>`;		
+		$("#hm-overlay").html(str);																	// Add items to markup														
+		this.OnClick(.88,.23,.15,.05)																// On click enter button
+	}
+	
 	Wordform()																					// WORDFORM INTERACTION
 	{
 		let str="";
-		let words=["27250:twenty-seven thousand, two hundred fifty",
-				"24532:twenty-four thousand, five hundred thirty two",
-				"99998:ninety-nine thousand, nine hundred ninety eight",
-				"15422:fifteen thousand, four hundred twenty two",
-				"99998:ninety-nine thousand, nine hundred ninety eight",
+		let words=["27,250:twenty-seven thousand, two hundred fifty",
+				"24,532:twenty-four thousand, five hundred thirty two",
+				"99,998:ninety-nine thousand, nine hundred ninety eight",
+				"15,422:fifteen thousand, four hundred twenty two",
+				"9,632:nine thousand, six hundred thirty six",
 				"197:one hundred ninety seven",
-				"2001:two thousand one",
+				"2,001:two thousand one",
 				"652:six hundred fifty two"
 				];
 		let n=Math.floor(Math.random()*words.length);												// Get random word
@@ -100,6 +169,7 @@ class Interact  {
 			});																
 		this.OnClick(.51,.42,.1,.05);																// On click done button
 	}
+	
 	
 	Rollover()																					// PLACEVALUE INTERACTION
 	{

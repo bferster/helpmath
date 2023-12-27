@@ -102,7 +102,7 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
-//this.topic=2;	
+this.topic=2;	
 		if (!app.course.modules[app.module].lessons[app.lesson])	return;							// Quit if no lesson
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		if (!curLesson.topics[app.topic])							return;							// Quit if no topic
