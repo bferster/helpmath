@@ -102,7 +102,7 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
-this.topic=2;	
+//this.topic=2;	
 		if (!app.course.modules[app.module].lessons[app.lesson])	return;							// Quit if no lesson
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		if (!curLesson.topics[app.topic])							return;							// Quit if no topic
@@ -170,7 +170,7 @@ this.topic=2;
 		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
-//act.Run("T00-00-01-11-00");	
+//act.Run("T00-00-02-09-00");	
 	}
 	
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR
@@ -315,9 +315,8 @@ this.topic=2;
 						{name:"Using models to represent models",start:165.79,end:231.56,status:0,links:[],triggers:[],id:"00-00-02-04"},
 						{name:"",start:233.49,end:274.53,status:0,links:[],triggers:[{time:"40.94",id:"T00-00-02-05-00"}],id:"00-00-02-05"},
 						{name:"",start:277.1,end:339,status:0,links:[],triggers:[{time:"625",id:"T00-00-02-06-00"}],id:"00-00-02-06"},
-						{name:"",start:341.55,end:414.76,status:0,links:[],id:"00-00-02-07",triggers:[{time:"39.04",id:"T00-00-02-07-00"},
-							{time:"65.13",id:"T00-00-02-07-01"},
-							{time:"64.95",id:"T00-00-02-07-02"}]},
+						{name:"",start:341.55,end:414.76,status:0,links:[],id:"00-00-02-07",triggers:[{time:"37.4",id:"T00-00-02-07-00"},
+							{time:"65.13",id:"T00-00-02-07-01"}]},
 						{name:"Writing numbers",start:417.95,end:473,status:0,links:[],triggers:[],id:"00-00-02-08"},
 						{name:"",start:476.38,end:499.09,status:0,links:[],triggers:[],id:"00-00-02-09"},
 						{name:"Expanded form",start:500.97,end:583.1,status:0,links:[],triggers:[],id:"00-00-02-10"},
