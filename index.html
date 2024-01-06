@@ -190,10 +190,10 @@
 	{
 		var str="";
 		$("#popupDiv").remove();																		// Kill old one, if any
-		str+="<div id='popupDiv' class='hm-popup'>"; 													// Add div
+		str+="<div id='popupDiv' class='hm-popup' style='font-size:18px'>"; 							// Add div
 		if (time == -1) {																				// If has close but
 			time=100000;																				// Increase time
-			str+="<img id='pu-close' src='img/closedot.gif' style='float:right;cursor:pointer'>";		// Add close button
+			str+="<img id='pu-close' src='img/closebut.png' style='float:right;cursor:pointer;width:16px'>";	// Add close button
 			}
 		str+=msg+"</div>"; 																				// Add div
 		$(div ? "#"+div : "body").append(str);															// Add popup to div or body

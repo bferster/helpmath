@@ -37,6 +37,7 @@ class Interact  {
 		this.acts["T00-00-02-07-00"]={ id:"T00-00-02-07-00", type:"click", done:"play+9", items:[ { sx:.52, sy:.84, wid:.3, hgt:.1 }] };
 		this.acts["T00-00-02-07-01"]={ id:"T00-00-02-07-01", type:"click", done:"play", items:[ { sx:.52, sy:.84, wid:.3, hgt:.1 }] };
 		this.acts["T00-00-02-09-00"]={ id:"T00-00-02-09-00", type:"dragdigits", doneAnimation:true, items:[], back:"back.png", done:"repeat" };
+		this.acts["T00-00-04-01-00"]={ id:"T00-00-04-01-00", type:"robot",doneAnimation:true, items:[] };
 	}
 
 	Run(id)
@@ -55,6 +56,7 @@ class Interact  {
 		else if (act.curAct.type == "wordform2")	this.Wordform2();								// Wordform2
 		else if (act.curAct.type == "models")		this.Models();									// Models
 		else if (act.curAct.type == "dragdigits")	this.DragDigits();								// Dragdigits
+		else if (act.curAct.type == "robot")		this.RobotGame();								// Robot game
 	
 		$("#hm-overlay").on("click", (e)=>{															// ON OVERLAY CLICK
 			let x=e.offsetX/$("#hm-overlay").width();												// Get x pos
@@ -62,6 +64,63 @@ class Interact  {
 			trace(x.toFixed(2),y.toFixed(2));														// Log
 			});
 	}
+
+
+	RobotGame(which=1)																			// ROBOTGAME INTERACTION
+	{
+		let i,o,str="";
+		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
+		str+=`<img src="${this.path}-back${which}.png" style="width:100%">`;						// Add back
+		if (which == 1) {
+			act.curAct.items.push({ sx:3,	 sy:90, 	ex:28,	 ey:27, 	wid:5 });
+			act.curAct.items.push({ sx:8,	 sy:90, 	ex:28,	 ey:39, 	wid:5 });
+			act.curAct.items.push({ sx:13,	 sy:90, 	ex:28,	 ey:50, 	wid:5 });
+			act.curAct.items.push({ sx:18,	 sy:90, 	ex:28,	 ey:64, 	wid:5 });
+			act.curAct.items.push({ sx:23,	 sy:90, 	ex:28,	 ey:74, 	wid:5 });
+			act.curAct.items.push({ sx:28,	 sy:90, 	ex:37.5, ey:27, 	wid:5 });
+			act.curAct.items.push({ sx:38.5, sy:90, 	ex:38,	 ey:39, 	wid:5 });
+			act.curAct.items.push({ sx:48,	 sy:90, 	ex:40,	 ey:50, 	wid:5 });
+			act.curAct.items.push({ sx:53,   sy:90, 	ex:39.5, ey:64, 	wid:5 });
+			act.curAct.items.push({ sx:59,	 sy:90, 	ex:40,	 ey:74, 	wid:5 });
+		}
+
+		for (i=0;i<act.curAct.items.length;++i) {													// For each item
+			o=act.curAct.items[i];																	// Point at items
+			o.status=false;																			// Reset status
+			str+=`<img id="hm-act-${i}" src="${this.path}-${i}.png" style="position:absolute;left:${o.sx}%;top:${o.sy}%;height:${o.wid}%">`	
+			}
+		str+=`<div id="hm-robot" style="position:absolute;left:68%;top:5%;width:29%"></div>`;		// Holds robot
+
+		$("#hm-overlay").html(str);																	// Add items to markup														111110000
+		for (i=0;i<act.curAct.items.length;++i) {
+			$("#hm-act-"+i ).draggable({															// Make item draggable
+				stop:(e,ui)=>{																		// On drag stop
+					let j=e.target.id.substring(7);													// Get index
+					let o=act.curAct.items[j];														// Point at item
+					if ((Math.abs(ui.position.left/w*100-o.ex) < 10) && (Math.abs(ui.position.top/h*100-o.ey) < 20)) { // If correct
+						o.status=true;																// Set status
+						$("#hm-act-"+j).css({ left:o.ex+"%", top:o.ey+"%"});						// Move in place
+						for (j=0;j<act.curAct.items.length;++j)	if (!act.curAct.items[j].status) break;	// Go through status
+							if (j == act.curAct.items.length) this.Done(act.curAct);				// All correct!, so handle done 
+							Sound("img/tada.mp3");													// Correct sound
+							trace(e.target.id.substring(7))
+							$("#hm-robot").append(`<img src="${this.path}-8${e.target.id.substring(7)}.png" style="width:100%;position:absolute">`);		// Add it	
+							}
+						else{																		// Wrong
+							o.status=false;															// Set status
+							$("#hm-act-"+j).css({ left:o.sx+"%", top:o.sy+"%" });					// Move back
+							Sound("img/error1.mp3");												// Incorrect sound
+						}
+					}
+				});
+			}
+			
+		this.OnClick(.83,.89,.1,.05,()=>{															// On help
+			TimedPopUp("The object of the game is to enter missing digits and values.<br>For the missing information in each row, drag the answers in the correct box.",-1)
+			});
+	
+	}
+
 
 	Click(num=0)																				// CLICK INTERACTION
 	{

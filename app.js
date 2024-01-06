@@ -102,7 +102,6 @@ class App  {
 	
 	ShowLesson()																				// SHOW LESSON
 	{
-//this.topic=2;	
 		if (!app.course.modules[app.module].lessons[app.lesson])	return;							// Quit if no lesson
 		curLesson=app.course.modules[app.module].lessons[app.lesson];								// Point at lesson
 		if (!curLesson.topics[app.topic])							return;							// Quit if no topic
@@ -170,9 +169,9 @@ class App  {
 		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
-//act.Run("T00-00-02-09-00");	
+act.Run("T00-00-04-01-00");	
 	}
-	
+
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR
 	{
 		let i;
@@ -209,10 +208,10 @@ class App  {
 			app.page++;																				// Advance to next page																		
 		else if (app.topic < app.course.modules[app.module].lessons[app.lesson].topics.length-1)	// If not last topic
 			app.page=0,app.topic++;																	// Advance to next topic																	
-		else if (app.lesson < app.course.modules[app.module].lessons.length-1)						// If not last lesson
-			app.page=0,app.topic=0,app.lesson++;													// Advance to next lesson																	
-		else if (app.module < app.course.modules.length-1)											// If not last module
-			app.page=0,app.topic=0,app.lesson=0,app.module++;										// Advance to next module																	
+//		else if (app.lesson < app.course.modules[app.module].lessons.length-1)						// If not last lesson
+//			app.page=0,app.topic=0,app.lesson++;													// Advance to next lesson																	
+//		else if (app.module < app.course.modules.length-1)											// If not last module
+//			app.page=0,app.topic=0,app.lesson=0,app.module++;										// Advance to next module																	
 		app.ShowLesson();																			// Show page
 	}
 
@@ -253,8 +252,8 @@ class App  {
 			$("[id^=hm-topic-]").css("background-color","#185b9d;");								// Reset all
 			$("#hm-topic-"+app.topic).css("background-color","#009900");							// Hilite button
 			app.page=0;																				// Start on 1st page
-			if ((app.topic == 1) || (app.topic == 2) || (app.topic == 5))	pages();				// Has specific pages
-			else 															app.ShowLesson()		// Go to topic
+			if ((app.topic > 0) && (app.topic < 6))	pages();										// Has specific pages
+			else 									app.ShowLesson()								// Go directly to topic
 			});
 
 		function pages() {																			// SHOW PAGES
@@ -345,27 +344,34 @@ class App  {
 						{name:"",start:1418.13,end:1432.25,status:0,links:[],triggers:[{time:"13.92",id:"T00-00-02-31-00"}],id:"00-00-02-31"},
 						]},	// TOPIC
 					{ name: "Try It!", pages:[						
-						{ name: "Introduction", start:4,  end:12.6, status:0 },
-						{ name: "?", start:4,  end:12.6, status:0 },
+						{name:"Introduction",start:4,end:12.6,status:0,links:[],triggers:[],id:"00-00-03-00"},
+						{name:"Match key terms",start:15.7,end:45.2,status:0,links:[],triggers:[],id:"00-00-03-01"},
+						{name:"",start:46.3,end:63,status:0,links:[],triggers:[],id:"00-00-03-02"},
+						{name:"",start:64.03,end:118.47,status:0,links:[],triggers:[],id:"00-00-03-03"},
+						{name:"",start:120.8,end:136.33,status:0,links:[],triggers:[],id:"00-00-03-04"},
+						{name:"",start:160.43,end:169.07,status:0,links:[],triggers:[],id:"00-00-03-05"},
 					]},	// TOPIC
 						{ name: "Play It!", pages:[						
-						{ name: "Introduction", start:4,  end:12.6, status:0 },
-						{ name: "?", start:4,  end:12.6, status:0 },
-					]},	// TOPIC
+						{name:"Introduction",start:5.36,end:16.78,status:0,links:[],triggers:[],id:"00-00-04-00"},
+						{name:"Play the game!",start:19.11,end:84.63,status:0,links:[],triggers:[{time:"64.8",id:"T00-00-04-01-00"}],id:"00-00-04-01"},
+						]},	// TOPIC
 					{ name: "Practice Test", pages:[						
-						{ name: "Introduction", start:4,  end:12.6, status:0 },
-						{ name: "?", start:4,  end:12.6, status:0 },
-					]},	// TOPIC
+						{name:"Introduction",start:4,end:12.6,status:0,links:[],triggers:[],id:"00-00-05-00"},
+						{name:"1. Restate the question ",start:13.61,end:40.32,status:0,links:[],triggers:[],id:"00-00-05-01"},
+						{name:"2. Organize the information",start:47.07,end:66.79,status:0,links:[],triggers:[],id:"00-00-05-02"},
+						{name:"3. Solve the problem",start:70.3,end:94.75,status:0,links:[],triggers:[],id:"00-00-05-03"},
+						{name:"4. Check your work",start:96.4,end:126,status:0,links:[],triggers:[],id:"00-00-05-04"},
+						{name:"Practice  ",start:129.75,end:235.31,status:0,links:[],triggers:[],id:"00-00-05-05"}
+						]},	// TOPIC
 					{ name: "Final Quiz", pages:[						
-						{ name: "Introduction", start:4,  end:12.6, status:0 },
-						{ name: "?", start:4,  end:12.6, status:0 },
-					]}], // TOPICS END
+						{name:"Introduction",start:4,end:7,status:0,links:[],triggers:[],id:"00-00-06-00"},
+						{name:"Final Quiz",start:12.6,end:31.6,status:0,links:[],triggers:[],id:"00-00-06-01"}	
+						]}], // TOPICS END
 					
 			}],  // LESSON END
 		}	// MODULES
 			
 	}	
-
 
  
 } // App class closure
