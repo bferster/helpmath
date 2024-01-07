@@ -169,7 +169,7 @@ class App  {
 		$("#hm-next").on("click",()=>{ $("#hm-pageNext").trigger("click"); });						// NEXT
 		$("#hm-mapbut").on("click",()=>{ app.ShowTopicMenu() });									// TOPICS MENU
 		$("#hm-keyterms").on("click",()=>{ key.Show() });											// KEY TERMS MENU
-act.Run("T00-00-04-01-00");	
+//act.Run("T00-00-04-01-00");	
 	}
 
 	DrawPageBar(pages)																			// DRAW PAGE NAVIGATION BAR

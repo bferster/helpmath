@@ -66,30 +66,41 @@ class Interact  {
 	}
 
 
-	RobotGame(which=1)																			// ROBOTGAME INTERACTION
+	RobotGame(which=0)																			// ROBOTGAME INTERACTION
 	{
 		let i,o,str="";
 		let w=$("#hm-overlay").width(), h=$("#hm-overlay").height();								// Get container sizes
-		str+=`<img src="${this.path}-back${which}.png" style="width:100%">`;						// Add back
-		if (which == 1) {
+		str+=`<img src="${this.path}-back${which+1}.png" style="width:100%">`;						// Add back
+		act.curAct.items=[];																		// Clear items
+		if (which == 0) {
 			act.curAct.items.push({ sx:3,	 sy:90, 	ex:28,	 ey:27, 	wid:5 });
 			act.curAct.items.push({ sx:8,	 sy:90, 	ex:28,	 ey:39, 	wid:5 });
 			act.curAct.items.push({ sx:13,	 sy:90, 	ex:28,	 ey:50, 	wid:5 });
-			act.curAct.items.push({ sx:18,	 sy:90, 	ex:28,	 ey:64, 	wid:5 });
-			act.curAct.items.push({ sx:23,	 sy:90, 	ex:28,	 ey:74, 	wid:5 });
-			act.curAct.items.push({ sx:28,	 sy:90, 	ex:37.5, ey:27, 	wid:5 });
+			act.curAct.items.push({ sx:18,	 sy:90, 	ex:28,	 ey:61, 	wid:5 });
+			act.curAct.items.push({ sx:23,	 sy:90, 	ex:28,	 ey:73, 	wid:5 });
+			act.curAct.items.push({ sx:28,	 sy:90, 	ex:38, 	 ey:27, 	wid:5 });
 			act.curAct.items.push({ sx:38.5, sy:90, 	ex:38,	 ey:39, 	wid:5 });
 			act.curAct.items.push({ sx:48,	 sy:90, 	ex:40,	 ey:50, 	wid:5 });
-			act.curAct.items.push({ sx:53,   sy:90, 	ex:39.5, ey:64, 	wid:5 });
-			act.curAct.items.push({ sx:59,	 sy:90, 	ex:40,	 ey:74, 	wid:5 });
-		}
+			act.curAct.items.push({ sx:53,   sy:90, 	ex:39.5, ey:61, 	wid:5 });
+			act.curAct.items.push({ sx:59,	 sy:90, 	ex:40,	 ey:73, 	wid:5 });
+			}
+		else if (which == 1) {
+			act.curAct.items.push({ sx:3,	 sy:90, 	ex:23,   ey:31, 	wid:5 });
+			act.curAct.items.push({ sx:8,	 sy:90, 	ex:23,   ey:45, 	wid:5 });
+			act.curAct.items.push({ sx:13,	 sy:90, 	ex:23,   ey:58, 	wid:5 });
+			act.curAct.items.push({ sx:18,	 sy:90, 	ex:34,   ey:19.5, 	wid:5 });
+			act.curAct.items.push({ sx:23,	 sy:90, 	ex:23,   ey:73, 	wid:5 });
+			act.curAct.items.push({ sx:28,	 sy:90, 	ex:32.5, ey:45, 	wid:5 });
+			act.curAct.items.push({ sx:35.5, sy:90, 	ex:31,	 ey:73, 	wid:5 });
+			act.curAct.items.push({ sx:46,	 sy:88, 	ex:46,	 ey:70, 	wid:10 });
+			}
 
 		for (i=0;i<act.curAct.items.length;++i) {													// For each item
 			o=act.curAct.items[i];																	// Point at items
 			o.status=false;																			// Reset status
-			str+=`<img id="hm-act-${i}" src="${this.path}-${i}.png" style="position:absolute;left:${o.sx}%;top:${o.sy}%;height:${o.wid}%">`	
+			str+=`<img id="hm-act-${i}" src="${this.path}-${which*20+i}.png" style="position:absolute;left:${o.sx}%;top:${o.sy}%;height:${o.wid}%">`;	
 			}
-		str+=`<div id="hm-robot" style="position:absolute;left:68%;top:5%;width:29%"></div>`;		// Holds robot
+		str+=`<div id="hm-robot" style="position:absolute;left:69%;top:6%;width:25%"></div>`;		// Holds robot
 
 		$("#hm-overlay").html(str);																	// Add items to markup														111110000
 		for (i=0;i<act.curAct.items.length;++i) {
@@ -103,8 +114,9 @@ class Interact  {
 						for (j=0;j<act.curAct.items.length;++j)	if (!act.curAct.items[j].status) break;	// Go through status
 							if (j == act.curAct.items.length) this.Done(act.curAct);				// All correct!, so handle done 
 							Sound("img/tada.mp3");													// Correct sound
-							trace(e.target.id.substring(7))
 							$("#hm-robot").append(`<img src="${this.path}-8${e.target.id.substring(7)}.png" style="width:100%;position:absolute">`);		// Add it	
+							if ((e.target.id.substring(7) == 0) && which)	$("#hm-robot").append(`<img src="${this.path}-89.png" style="width:100%;position:absolute">`);	// Kludge	
+							if ((e.target.id.substring(7) == 2) && (which))	$("#hm-robot").append(`<img src="${this.path}-88.png" style="width:100%;position:absolute">`);		// Kludge
 							}
 						else{																		// Wrong
 							o.status=false;															// Set status
@@ -115,10 +127,11 @@ class Interact  {
 				});
 			}
 			
-		this.OnClick(.83,.89,.1,.05,()=>{															// On help
+		this.OnClick(.82,.86,.1,.05,()=>{															// On help
 			TimedPopUp("The object of the game is to enter missing digits and values.<br>For the missing information in each row, drag the answers in the correct box.",-1)
 			});
-	
+		this.OnClick(.73,.95,.1,.05,()=>{ this.RobotGame(0);		});								// Switch to game 1
+		this.OnClick(.89,.95,.1,.05,()=>{ this.RobotGame(1);		});								// Switch to game 2
 	}
 
 
